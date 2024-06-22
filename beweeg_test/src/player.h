@@ -2,22 +2,25 @@
 
 struct player {
     enum mode {
+        idle,
         walk,
         jump,
-        attack
+        kick
     };
 
     // methods
     player() {
         position = bn::point(0,0);
-        velocity = bn::point(0,0);
-        current_mode = mode::walk;
+        velocity_x = 0.f;
+        velocity_y = 0.f;
+        current_mode = mode::idle;
     }
 
     ~player() {}
 
     // fields
     bn::point position;
-    bn::point velocity; // velocity has (x, y) values
+    float velocity_x;
+    float velocity_y;
     mode current_mode;
 };

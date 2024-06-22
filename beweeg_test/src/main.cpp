@@ -15,6 +15,8 @@
 #include "common_info.h"
 #include "common_variable_8x16_sprite_font.h"
 
+#include "player.h"
+
 int main()
 {
     bn::core::init();
@@ -38,12 +40,15 @@ int main()
 
     // maak rein sprite aan
     bn::sprite_ptr rein_sprite = bn::sprite_items::rein.create_sprite(0, 0);
-    bn::point rein_position(40, 0);
+    player rein;
+    rein.position.set_x(40);
 
     // maak jochem sprite aan
     bn::sprite_ptr jochem_sprite = bn::sprite_items::jochem.create_sprite(0, 0);
     bn::sprite_ptr punch_sprite = bn::sprite_items::punch.create_sprite(20, 50);
-    bn::point jochem_position(-40, 0);
+
+    player jochem;
+    jochem.position.set_x(-40);
 
     // rein animatie
     bn::sprite_animate_action<96> action = bn::create_sprite_animate_action_forever(rein_sprite, 1, bn::sprite_items::rein.tiles_item(),
@@ -76,112 +81,104 @@ int main()
     bn::sprite_animate_action<16> punch_action = bn::create_sprite_animate_action_once(punch_sprite, 1, bn::sprite_items::punch.tiles_item(),
                                                                                        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 
-    // init velocity
-    float jochem_velocity_x = 0;
-    float jochem_velocity_y = 0;
-
-    float rein_velocity_x = 0;
-    float rein_velocity_y = 0;
-
-    bool jochem_kicking = false;
-    bool jochem_moving = false;
-    int kick_timer = 0;
-    int kick_offset = jochem_sprite.horizontal_flip() ? -10 : 10;
-
     while (true)
     {
         // x position
-        if (bn::keypad::left_held() && jochem_position.x() > -width)
+        if (bn::keypad::left_held() && jochem.position.x() > -width)
         {
-            jochem_velocity_x = -4.f;
+            jochem.velocity_x = -4.f;
+            jochem.current_mode = player::mode::walk;
             jochem_sprite.set_horizontal_flip(true);
-            jochem_moving = true;
         }
-        else if (bn::keypad::right_held() && jochem_position.x() < width)
+        else if (bn::keypad::right_held() && jochem.position.x() < width)
         {
-            jochem_velocity_x = 4.f;
+            jochem.velocity_x = 4.f;
+            jochem.current_mode = player::mode::walk;
             jochem_sprite.set_horizontal_flip(false);
-            jochem_moving = true;
         }
         else
         {
-            jochem_velocity_x = 0.f;
-            jochem_moving = false;
+            jochem.velocity_x = 0.f;
         }
 
         // y position
-        if (jochem_position.y() > height - 30)
+        if (jochem.position.y() >= height - 30)
         {
-            jochem_velocity_y = 0.f;
+            jochem.velocity_y = 0.f;
         }
         else
         {
-            jochem_velocity_y += gravity;
+            jochem.velocity_y += gravity;
         }
 
         // jumping
         if (bn::keypad::up_pressed())
         {
-            jochem_velocity_y = -4.f;
+            jochem.velocity_y = -4.f;
+            jochem.current_mode = player::mode::jump;
         }
         else
         {
-            jochem_velocity_y += gravity;
+            jochem.velocity_y += gravity;
         }
 
         // kicking
         if (bn::keypad::a_pressed())
         {
-            jochem_kicking = true;
+            jochem.current_mode = player::mode::kick;
         } else if (kicking.done()) {
             kicking.reset();
-            jochem_kicking = false;
         }
 
-        // jochem update
-        if (jochem_kicking)
+        switch (jochem.current_mode)
         {
-            jochem_moving = false;
+        case player::mode::kick:
             kicking.update();
-        }
-        else if (jochem_moving)
-        {
-            jochem_kicking = false;
+            break;
+        case player::mode::walk:
             walking.update();
-        }
-        else
-        {
+            break;
+        case player::mode::jump:
             idle.update();
+            break;
+        case player::mode::idle:
+            idle.update();
+            break;
+        default:
+            break;
         }
 
         // rein
-        if (jochem_position.x() - rein_position.x() > 0) {
-            rein_velocity_x = 1;
+        if (jochem.position.x() - rein.position.x() > 0) {
+            rein.velocity_x = 1;
+            rein.current_mode = player::mode::walk;
         } else {
-            rein_velocity_x = -1;
+            rein.velocity_x = -1;
+            rein.current_mode = player::mode::walk;
         }
-        // rein_velocity_x = jochem_position.x() - rein_position.x();
 
-        if ( rein_position.y() > height - 30)
+        if ( rein.position.y() >= height - 30)
         {
-            rein_velocity_y = 0.f;
+            rein.velocity_y = 0.f;
         }
         else
         {
-            rein_velocity_y += gravity;
+            rein.velocity_y += gravity;
         }
 
-        if (rein_position.x() != jochem_position.x()) {
-            rein_position.set_x( rein_position.x() + rein_velocity_x );
+        if (rein.position.x() != jochem.position.x()) {
+            rein.position.set_x( rein.position.x() + rein.velocity_x );
         }
 
-        rein_position.set_y( rein_position.y() + rein_velocity_y );
+        // update positie
+        rein.position.set_y( rein.position.y() + rein.velocity_y );
 
-        jochem_position.set_x(jochem_position.x() + jochem_velocity_x);
-        jochem_position.set_y(jochem_position.y() + jochem_velocity_y);
+        jochem.position.set_x(jochem.position.x() + jochem.velocity_x);
+        jochem.position.set_y(jochem.position.y() + jochem.velocity_y);
 
-        rein_sprite.set_position(rein_position);
-        jochem_sprite.set_position(jochem_position);
+        // sprite naar positie
+        rein_sprite.set_position(rein.position);
+        jochem_sprite.set_position(jochem.position);
 
         info.update();
         action.update();

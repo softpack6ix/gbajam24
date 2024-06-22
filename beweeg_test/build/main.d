@@ -64,7 +64,8 @@ main.o: /Users/pirko/butano/examples/beweeg_test/src/main.cpp \
  /Users/pirko/butano/examples/beweeg_test/../../common/include/common_variable_8x16_sprite_font.h \
  /Users/pirko/butano/butano/include/bn_sprite_font.h \
  /Users/pirko/butano/butano/include/bn_utf8_characters_map.h \
- /Users/pirko/butano/examples/beweeg_test/build/bn_sprite_items_common_variable_8x16_font.h
+ /Users/pirko/butano/examples/beweeg_test/build/bn_sprite_items_common_variable_8x16_font.h \
+ /Users/pirko/butano/examples/beweeg_test/src/player.h
 /Users/pirko/butano/butano/include/bn_core.h:
 /Users/pirko/butano/butano/include/bn_span.h:
 /Users/pirko/butano/butano/include/bn_array.h:
@@ -131,3 +132,4 @@ main.o: /Users/pirko/butano/examples/beweeg_test/src/main.cpp \
 /Users/pirko/butano/butano/include/bn_sprite_font.h:
 /Users/pirko/butano/butano/include/bn_utf8_characters_map.h:
 /Users/pirko/butano/examples/beweeg_test/build/bn_sprite_items_common_variable_8x16_font.h:
+/Users/pirko/butano/examples/beweeg_test/src/player.h:
