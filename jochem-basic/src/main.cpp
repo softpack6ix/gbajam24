@@ -76,6 +76,8 @@ int main()
 
     int kickTimer = 0;
     
+
+    
     while(true)
     {
         moving = false;
@@ -113,6 +115,11 @@ int main()
         int kick_offset = jochem_sprite.horizontal_flip() ? -10 : 10;
 
 
+        if (!moving && !isKicking) {    
+            idle.update();
+            jochem_sprite.set_position(x, y);
+        }
+
         if (moving) {
             if (isKicking) {
                 jochem_sprite.set_position(x, y);
@@ -141,10 +148,7 @@ int main()
         }
 
 
-        if (!moving && !isKicking) {    
-            idle.update();
-            jochem_sprite.set_position(x, y);
-        }
+        
 
 
 
