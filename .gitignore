@@ -22,3 +22,5 @@ build/
 **/vfx/*/**.png
 
 Jochem/
+
+*.sa2
