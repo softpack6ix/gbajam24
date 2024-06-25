@@ -12,10 +12,6 @@
 #include "bn_regular_bg_animate_actions.h"
 #include "bn_regular_bg_position_hbe_ptr.h"
 #include "bn_regular_bg_attributes_hbe_ptr.h"
-
-
-#include "bn_regular_bg_items_dragon.h"
-#include "bn_regular_bg_items_splash.h"
 #include "bn_sprite_animate_actions.h"
 
 #include "bn_sprite_items_splash_1.h"
@@ -30,9 +26,6 @@
 #include "common_variable_8x16_sprite_font.h"
 
 #include "bn_music_items.h"
-
-#include <vector>
-
 
 
 bn::sprite_animate_action<81> splash_action(const bn::sprite_ptr &sprite, const bn::sprite_item &sprite_item) 
@@ -58,23 +51,9 @@ int main()
     bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
     bn::bg_palettes::set_transparent_color(bn::color(0, 0, 0));
 
-    // High-res version
-    // int x_offset = 0;
-    // int y_offset = 32;
-    // bn::sprite_ptr splash_1 = bn::sprite_items::splash_1.create_sprite(-64+x_offset, -64+y_offset);
-    // bn::sprite_ptr splash_2 = bn::sprite_items::splash_2.create_sprite(0+x_offset, -64+y_offset);
-    // bn::sprite_ptr splash_3 = bn::sprite_items::splash_3.create_sprite(64+x_offset, -64+y_offset);
-
-    // bn::sprite_ptr splash_4 = bn::sprite_items::splash_4.create_sprite(-64+x_offset, 0+y_offset);
-
-    // bn::sprite_ptr splash_5 = bn::sprite_items::splash_5.create_sprite(0+x_offset, 0+y_offset);
-    // bn::sprite_ptr splash_6 = bn::sprite_items::splash_6.create_sprite(64+x_offset, 0+y_offset);
-
-
-    // Low-res version 
+    // 6 sprites (64x32 pixels)
     int x_offset = 10;
     int y_offset = 15;
-
 
     bn::sprite_item sprite_items[] {
         bn::sprite_items::splash_1,
