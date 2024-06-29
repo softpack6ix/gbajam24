@@ -66,15 +66,18 @@ struct Player {
     {
         // Watch for gravity
         int player_tile_index = get_map_tile_index_at_position(position, map_item);
+        int ground_tiles[] = {15, 16, 17, 18, 19, 1, 2};
+        bool on_ground = false;
+       
+       for (size_t i = 0; i < 7; i++) {
+            if (player_tile_index == ground_tiles[i]) {
+                on_ground = true;
+            }
+       }
        
 
         // can fall
-        if (player_tile_index == 0) {
-            velocity.set_y(velocity.y() + gravity);
-            current_anim = Animation::jump_stay;
-        }
-        // platform beneath player 
-        else {
+        if (on_ground) {
             jumping = false;
             // current_anim = Animation::idle;
             velocity.set_y(bn::min(bn::fixed(0.0), velocity.y()));
@@ -86,6 +89,12 @@ struct Player {
                     current_anim = Animation::jump_down;
                 }
             }
+        }
+        // platform beneath player 
+        else {
+            velocity.set_y(velocity.y() + gravity);
+            current_anim = Animation::jump_stay;
+            jumping_down.reset();
         }
 
         // jumping and gravity
@@ -106,13 +115,13 @@ struct Player {
         if (bn::keypad::left_held()) {
             velocity.set_x(-run_speed);
             jochem_sprite.set_horizontal_flip(true);
-            if (!jumping) {
+            if (on_ground) {
                 current_anim = Animation::walk;
             }
         }
         if (bn::keypad::right_held()) {
             velocity.set_x(run_speed);
-            if (!jumping) {
+            if (on_ground) {
                 current_anim = Animation::walk;
             }
             jochem_sprite.set_horizontal_flip(false);
