@@ -14,7 +14,9 @@ struct Player {
     enum Animation {
         idle,
         walk,
-        jump,
+        jump_up,
+        jump_stay, 
+        jump_down,
         kick,
         charge_spell
     };
@@ -24,7 +26,8 @@ struct Player {
     bn::fixed_point position;
     bn::fixed_point velocity;
     bn::fixed gravity;
-    bn::fixed jump_velocity = -4.0;
+    bn::fixed jump_velocity = -7.0;
+    bn::fixed run_speed = 4;
 
     Animation current_anim;
     bool jumping;
@@ -64,33 +67,54 @@ struct Player {
         // Watch for gravity
         int player_tile_index = get_map_tile_index_at_position(position, map_item);
        
+
+        // can fall
+        if (player_tile_index == 0) {
+            velocity.set_y(velocity.y() + gravity);
+            current_anim = Animation::jump_stay;
+        }
+        // platform beneath player 
+        else {
+            jumping = false;
+            // current_anim = Animation::idle;
+            velocity.set_y(bn::min(bn::fixed(0.0), velocity.y()));
+            
+            if (current_anim != Animation::kick) {
+                if (jumping_down.done()) {
+                    current_anim = Animation::idle;
+                } else {
+                    current_anim = Animation::jump_down;
+                }
+            }
+        }
+
         // jumping and gravity
-        if (bn::keypad::a_pressed() && current_anim != Animation::jump) {
+        if (bn::keypad::a_pressed() && !jumping) {
             jumping = true;
-            current_anim = Animation::jump;
+            current_anim = Animation::jump_up;
             velocity.set_y(jump_velocity);
-        } else {
-            // can fall
-            if (player_tile_index == 0) {
-                velocity.set_y(velocity.y() + gravity);
-            }
-            // no platform beneath player 
-            else {
-                jumping = false;
-                // current_anim = Animation::idle;
-                velocity.set_y(bn::min(bn::fixed(0.0), velocity.y()));
-            }
+            jumping_up.reset();
+            jumping_down.reset();
+        }
+        
+
+        if (jumping && jumping_up.done()) {
+            current_anim = Animation::jump_stay;
         }
         
         // walking
         if (bn::keypad::left_held()) {
-            velocity.set_x(-2);
-            current_anim = Animation::walk;
+            velocity.set_x(-run_speed);
             jochem_sprite.set_horizontal_flip(true);
+            if (!jumping) {
+                current_anim = Animation::walk;
+            }
         }
         if (bn::keypad::right_held()) {
-            velocity.set_x(2);
-            current_anim = Animation::walk;
+            velocity.set_x(run_speed);
+            if (!jumping) {
+                current_anim = Animation::walk;
+            }
             jochem_sprite.set_horizontal_flip(false);
         }
         
@@ -176,7 +200,7 @@ struct Player {
 
         // Update the right animation
         if (current_anim == Animation::walk) {
-            walking.update();
+            running.update();
         }
         if (current_anim == Animation::kick) {
             kicking.update();
@@ -184,30 +208,16 @@ struct Player {
         if (current_anim == Animation::idle) {
             idling.update();
         }
+        if (current_anim == Animation::jump_up) {
+            jumping_up.update();
+        }
+        if (current_anim == Animation::jump_stay) {
+            jumping_stay.update();
+        }
+        if (current_anim == Animation::jump_down) {
+            jumping_down.update();
+        }
     }
-
-
-
-    // Map (0,0) is top-left but sprite (0,0) is center-center
-    const bn::point get_map_point_at_position(bn::fixed_point pos) 
-    {
-        int map_x = mod(((pos.x() + bn::display::width() / 2) / 8).floor_integer(), 32);
-        int map_y = mod(((pos.y() + bn::display::height() / 2 + 28) / 8).floor_integer(), 32);
-        return bn::point(map_x, map_y);
-    }
-
-    int get_map_tile_index_at_position(bn::fixed_point pos, bn::regular_bg_map_item map_item) 
-    {
-        const bn::point p = get_map_point_at_position(pos);
-        bn::regular_bg_map_cell map_cell = map_item.cell(p);
-        int tile_index = bn::regular_bg_map_cell_info(map_cell).tile_index();
-
-        BN_LOG(bn::format<60>("map tile: {}, {}: {}", p.x(), p.y(), tile_index));
-        BN_LOG(bn::format<60>("player pos: {}, {}", position.x(), position.y()));
-
-        return  tile_index;
-    }
-
 
 
 
@@ -234,6 +244,25 @@ struct Player {
         35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
         48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59
     );
+
+    bn::sprite_animate_action<13> jumping_up = bn::create_sprite_animate_action_once(jochem_sprite, 1, bn::sprite_items::jochem.tiles_item(), 
+        60, 61, 62, 63, 64, 65
+    );
+
+    bn::sprite_animate_action<2> jumping_stay = bn::create_sprite_animate_action_forever(jochem_sprite, 1, bn::sprite_items::jochem.tiles_item(), 
+        66, 66
+    );
+
+    bn::sprite_animate_action<16> jumping_down = bn::create_sprite_animate_action_once(jochem_sprite, 1, bn::sprite_items::jochem.tiles_item(), 
+        67, 68, 69, 70, 71, 72, 74, 75, 76, 77, 78, 79, 80, 81, 82
+    );
+
+    bn::sprite_animate_action<20> running = bn::create_sprite_animate_action_forever(jochem_sprite, 1, bn::sprite_items::jochem.tiles_item(), 
+        83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 
+        98, 99, 100, 101, 102
+    );
+
+    
 
 
     // charge

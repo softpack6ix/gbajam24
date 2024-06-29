@@ -22,6 +22,7 @@
 
 // BGs
 #include "bn_regular_bg_items_tilemap.h"
+#include "bn_regular_bg_items_sky.h"
 
 // Sprites
 #include "bn_sprite_items_charge.h"
@@ -72,14 +73,16 @@ int main()
     bn::bg_palettes::set_transparent_color(bn::color(16, 24, 29));
 
     // World
-    const bn::fixed gravity = 0.1;
+    const bn::fixed gravity = 0.3;
 
     // BG and map
+    bn::regular_bg_ptr sky = bn::regular_bg_items::sky.create_bg(0, 0);
     bn::regular_bg_ptr tilemap = bn::regular_bg_items::tilemap.create_bg(8, 48);
     const bn::regular_bg_map_item& map_item = bn::regular_bg_items::tilemap.map_item();
 
     // Camera    
     bn::camera_ptr camera = bn::camera_ptr::create(0, 0);
+
     tilemap.set_camera(camera);
 
 
@@ -93,6 +96,9 @@ int main()
         
         // Smooth cam
         camera_follow_smooth(camera, player.jochem_sprite.position());
+
+        // Move bg
+        sky.set_position(player.position / bn::fixed(50.0));
 
         bn::core::update();
     }
