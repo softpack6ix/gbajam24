@@ -33,7 +33,7 @@ int get_map_tile_index_at_position(bn::fixed_point pos, bn::regular_bg_map_item 
     bn::regular_bg_map_cell map_cell = map_item.cell(p);
     int tile_index = bn::regular_bg_map_cell_info(map_cell).tile_index();
 
-    BN_LOG(bn::format<60>("map tile: {}, {}: {}", p.x(), p.y(), tile_index));
+    BN_LOG(bn::format<60>("map tile: ({}, {}): {}", p.x(), p.y(), tile_index));
     BN_LOG(bn::format<60>("player pos: {}, {}", pos.x(), pos.y()));
 
     return  tile_index;

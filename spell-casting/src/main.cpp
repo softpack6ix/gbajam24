@@ -82,9 +82,8 @@ int main()
 
     // Camera    
     bn::camera_ptr camera = bn::camera_ptr::create(0, 0);
-
     tilemap.set_camera(camera);
-
+    
 
     // Jochem player
     Player player(camera, gravity);
@@ -97,8 +96,8 @@ int main()
         // Smooth cam
         camera_follow_smooth(camera, player.jochem_sprite.position());
 
-        // Move bg
-        sky.set_position(player.position / bn::fixed(50.0));
+        // Move clouds/mountains bg parallax
+        sky.set_position(-player.position / bn::fixed(50.0));
 
         bn::core::update();
     }
