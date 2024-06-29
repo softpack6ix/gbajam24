@@ -5,6 +5,7 @@
 #include "bn_keypad.h"
 #include "bn_regular_bg_map_item.h"
 #include "bn_sprite_items_jochem.h"
+#include "bn_sprite_items_dust_sliding.h"
 
 #include "utils.h"
 
@@ -17,7 +18,7 @@ struct Player {
     bn::fixed_point velocity;
     bn::fixed gravity;
     bn::fixed jump_velocity = -7.0;
-    bn::fixed run_speed = 3.5;
+    bn::fixed run_speed = 4;
 
     bool is_jumping;
     bool is_kicking;
@@ -48,6 +49,7 @@ struct Player {
         punch_sprite.set_camera(cam);
         charge_sprite.set_camera(cam);
         bolt_sprite.set_camera(cam);
+        dust_sliding_sprite.set_camera(cam);
     }
 
 
@@ -93,13 +95,26 @@ struct Player {
         
 
         // sliding
-        if (is_running && bn::keypad::b_pressed()) {
+        if (is_running && bn::keypad::down_pressed()) {
             is_sliding = true;
             anim_slide.reset();
+            dust_sliding_sprite.set_visible(true);
         }
 
-        if (is_sliding && anim_slide.done()) {
+        if (is_sliding) {
+            if (anim_slide.done()) {
+                is_sliding = false;
+            } else {
+                bool flip = jochem_sprite.horizontal_flip();
+                dust_sliding_sprite.set_position(position + bn::point(flip ? -45 : 45,14));
+                dust_sliding_sprite.set_horizontal_flip(flip);
+            }
+        }
+
+        if (bn::keypad::down_released()) {
             is_sliding = false;
+            dust_sliding_action.reset();
+            dust_sliding_sprite.set_visible(false);
         }
 
         
@@ -128,7 +143,7 @@ struct Player {
         }
 
         // kicking
-        if (bn::keypad::b_pressed()) {
+        if (!is_running && bn::keypad::b_pressed()) {
             is_kicking = true;
             kick_timer = 0;
             anim_kick.reset();
@@ -204,6 +219,7 @@ struct Player {
         if (is_running && !is_jumping) {
             if (is_sliding && !anim_slide.done()) {
                 anim_slide.update();
+                dust_sliding_action.update();
             } else {
                 anim_run.update();
             }
@@ -234,6 +250,7 @@ struct Player {
     bn::sprite_ptr punch_sprite = bn::sprite_items::punch.create_sprite(20, 50);
     bn::sprite_ptr charge_sprite = bn::sprite_items::charge.create_sprite(0, 0);
     bn::sprite_ptr bolt_sprite = bn::sprite_items::bolt.create_sprite(0, 0);
+    bn::sprite_ptr dust_sliding_sprite = bn::sprite_items::dust_sliding.create_sprite(0, 0);
 
 
     // animations
@@ -305,4 +322,12 @@ struct Player {
         50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 
         67, 68, 69, 70, 71
     );
+
+    // dust sliding
+    bn::sprite_animate_action<42> dust_sliding_action = bn::create_sprite_animate_action_once(dust_sliding_sprite, 1, bn::sprite_items::dust_sliding.tiles_item(), 
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
+        16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 
+        33, 34, 35, 36, 37, 38, 39, 40, 41
+    );
+
 };
