@@ -20,16 +20,18 @@ int mod(int a, int b)
 
 // map utils 
 // Map (0,0) is top-left but sprite (0,0) is center-center
-const bn::point get_map_point_at_position(bn::fixed_point pos) 
+const bn::point get_map_point_at_position(bn::fixed_point pos, bn::regular_bg_map_item map_item) 
 {
-    int map_x = mod(((pos.x() + bn::display::width() / 2) / 8).floor_integer(), 32);
-    int map_y = mod(((pos.y() + bn::display::height() / 2 + 30) / 8).floor_integer(), 32);
+    bn::size dimensions = map_item.dimensions();
+    int map_x = mod(((pos.x() + bn::display::width() / 2 + 16) / 8).floor_integer(), dimensions.width());
+    int map_y = mod(((pos.y() + bn::display::height() / 2 + 30 + 96) / 8).floor_integer(), dimensions.height());
     return bn::point(map_x, map_y);
 }
 
+
 int get_map_tile_index_at_position(bn::fixed_point pos, bn::regular_bg_map_item map_item) 
 {
-    const bn::point p = get_map_point_at_position(pos);
+    const bn::point p = get_map_point_at_position(pos, map_item);
     bn::regular_bg_map_cell map_cell = map_item.cell(p);
     int tile_index = bn::regular_bg_map_cell_info(map_cell).tile_index();
 

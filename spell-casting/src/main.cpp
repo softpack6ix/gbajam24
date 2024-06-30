@@ -77,7 +77,7 @@ int main()
 
     // BG and map
     bn::regular_bg_ptr sky = bn::regular_bg_items::sky.create_bg(0, 0);
-    bn::regular_bg_ptr tilemap = bn::regular_bg_items::tilemap.create_bg(8, 48);
+    bn::regular_bg_ptr tilemap = bn::regular_bg_items::tilemap.create_bg(bn::display::width() / 2, bn::display::height() / 2);
     const bn::regular_bg_map_item& map_item = bn::regular_bg_items::tilemap.map_item();
 
     // Camera    

@@ -40,7 +40,7 @@ struct Player {
     // methods
     Player(bn::camera_ptr cam, bn::fixed grav) 
     {
-        position = bn::fixed_point(0,0);
+        position = bn::fixed_point(-8,0);
         velocity = bn::fixed_point(0,0);
         gravity = grav;
 
@@ -61,14 +61,19 @@ struct Player {
     {
         // Watch for gravity
         int player_tile_index = get_map_tile_index_at_position(position, map_item);
-        int ground_tiles[] = {15, 16, 17, 18, 19, 1, 2};
+        // int ground_tiles[] = {15, 16, 17, 18, 19, 1, 2};
+        int ground_tiles[] = {17, 18, 40, 41, 42, 43};
         bool on_ground = false;
        
-       for (size_t i = 0; i < 7; i++) {
-            if (player_tile_index == ground_tiles[i]) {
-                on_ground = true;
-            }
-       }
+    //    for (size_t i = 0; i < 7; i++) {
+    //         if (player_tile_index == ground_tiles[i]) {
+    //             on_ground = true;
+    //         }
+    //    }
+
+        if (player_tile_index != 0) {
+            on_ground = true;
+        }
        
 
         // can fall
@@ -95,7 +100,7 @@ struct Player {
         
 
         // sliding
-        if (is_running && bn::keypad::down_pressed()) {
+        if (is_running && bn::keypad::b_pressed()) {
             is_sliding = true;
             anim_slide.reset();
             dust_sliding_sprite.set_visible(true);
@@ -111,7 +116,7 @@ struct Player {
             }
         }
 
-        if (bn::keypad::down_released()) {
+        if (bn::keypad::b_released()) {
             is_sliding = false;
             dust_sliding_action.reset();
             dust_sliding_sprite.set_visible(false);
