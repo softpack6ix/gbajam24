@@ -25,6 +25,7 @@ struct Player {
     bool is_running;
     bool is_crouching;
     bool is_sliding;
+    bool is_rolling;
     bool is_near_edge;
     bool just_landed;
 
@@ -53,6 +54,7 @@ struct Player {
         bolt_sprite.set_camera(cam);
         dust_sliding_sprite.set_camera(cam);
 
+        dust_sliding_sprite.set_visible(false);
         dust_sliding_sprite.set_z_order(10);
         // jochem_sprite.set_z_order()
     }
@@ -84,15 +86,26 @@ struct Player {
         }
        
 
-        // can fall
+        // platform beneath player 
         if (on_ground) {
+            if (just_landed) {
+                just_landed = false;
+                if (is_running) {
+                    is_rolling = true;
+                }
+            }
+
             if (player_tile_index_left == 0 || player_tile_index_right == 0) {
                 is_near_edge = true;
             } else {
                 is_near_edge = false;
-            }
+            }            
 
             if (is_jumping && velocity.y() > 0) {
+                if (!just_landed) {
+                    just_landed = true;
+                }
+                
                 is_jumping = false;
                 anim_jump_down.reset();
                 anim_fall_roll.reset();
@@ -100,7 +113,7 @@ struct Player {
             
             velocity.set_y(bn::min(bn::fixed(0.0), velocity.y()));
         }
-        // platform beneath player 
+        // can fall
         else {
             velocity.set_y(velocity.y() + gravity);
         }
@@ -244,13 +257,19 @@ struct Player {
         jochem_sprite.set_position(position.x() + kick_offset, position.y() + 2);
 
 
+        // just landed and is running
 
         // Update the right animation
-        if (is_running && !is_jumping) {
+        if (is_rolling) {
+            if (anim_fall_roll.done()) {
+                is_rolling = false;
+            } else {
+                anim_fall_roll.update();
+            }
+        }
+        else if (is_running && !is_jumping) {
             if (is_sliding && !anim_slide.done()) {
                 anim_slide.update();
-            } else if (!anim_fall_roll.done()) {
-                anim_fall_roll.update();
             } else {
                 anim_run.update();
             }
