@@ -50,6 +50,9 @@ struct Player {
         charge_sprite.set_camera(cam);
         bolt_sprite.set_camera(cam);
         dust_sliding_sprite.set_camera(cam);
+
+        dust_sliding_sprite.set_z_order(10);
+        // jochem_sprite.set_z_order()
     }
 
 
@@ -103,23 +106,32 @@ struct Player {
         if (is_running && bn::keypad::b_pressed()) {
             is_sliding = true;
             anim_slide.reset();
-            dust_sliding_sprite.set_visible(true);
         }
 
         if (is_sliding) {
             if (anim_slide.done()) {
                 is_sliding = false;
             } else {
-                bool flip = jochem_sprite.horizontal_flip();
-                dust_sliding_sprite.set_position(position + bn::point(flip ? -45 : 45,14));
+                bool flip = !jochem_sprite.horizontal_flip();
+                dust_sliding_sprite.set_position(position + bn::point(flip ? -5 : 5, 12));
                 dust_sliding_sprite.set_horizontal_flip(flip);
+            }
+
+            if (anim_slide.current_index() == 7) {
+                dust_sliding_sprite.set_visible(true);
+                dust_sliding_action.reset();
             }
         }
 
         if (bn::keypad::b_released()) {
             is_sliding = false;
-            dust_sliding_action.reset();
+            
+        }
+
+        if (dust_sliding_action.done()) {
             dust_sliding_sprite.set_visible(false);
+        } else {
+            dust_sliding_action.update();
         }
 
         
@@ -224,11 +236,11 @@ struct Player {
         if (is_running && !is_jumping) {
             if (is_sliding && !anim_slide.done()) {
                 anim_slide.update();
-                dust_sliding_action.update();
             } else {
                 anim_run.update();
             }
-        } 
+        }
+
         else if (is_kicking && !anim_kick.done()) {
             anim_kick.update();
         } 
@@ -329,10 +341,10 @@ struct Player {
     );
 
     // dust sliding
-    bn::sprite_animate_action<42> dust_sliding_action = bn::create_sprite_animate_action_once(dust_sliding_sprite, 1, bn::sprite_items::dust_sliding.tiles_item(), 
+    bn::sprite_animate_action<41> dust_sliding_action = bn::create_sprite_animate_action_once(dust_sliding_sprite, 1, bn::sprite_items::dust_sliding.tiles_item(), 
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
         16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 
-        33, 34, 35, 36, 37, 38, 39, 40, 41
+        33, 34, 35, 36, 37, 38, 39, 40
     );
 
 };
