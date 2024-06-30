@@ -83,7 +83,8 @@ struct Player {
         if (on_ground) {
             if (is_jumping && velocity.y() > 0) {
                 is_jumping = false;
-                anim_jump_down.reset();
+                // anim_jump_down.reset();
+                anim_fall_roll.reset();
             }
             
             velocity.set_y(bn::min(bn::fixed(0.0), velocity.y()));
@@ -98,7 +99,8 @@ struct Player {
             is_jumping = true;
             velocity.set_y(jump_velocity);
             anim_jump_up.reset();
-            anim_jump_down.reset();
+            // anim_jump_down.reset();
+            anim_fall_roll.reset();
         }
         
 
@@ -228,7 +230,7 @@ struct Player {
         
         // Update sprite position
         int kick_offset = is_kicking ? (jochem_sprite.horizontal_flip() ? -10 : 10) : 0;
-        jochem_sprite.set_position(position.x() + kick_offset, position.y());
+        jochem_sprite.set_position(position.x() + kick_offset, position.y() + 2);
 
 
 
@@ -250,8 +252,8 @@ struct Player {
             } else {
                 anim_jump_up.update();
             }
-        } else if (on_ground && !anim_jump_down.done()) {
-            anim_jump_down.update();
+        } else if (on_ground && !anim_fall_roll.done()) {
+            anim_fall_roll.update();
         }
          else {
             anim_idle.update();
@@ -306,6 +308,17 @@ struct Player {
         103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 
         116, 117, 118, 119, 120, 121, 122, 121, 120, 119, 118, 117, 116, 
         115, 114, 113, 112, 111, 110, 109, 108, 107, 106, 105, 104, 103
+    );
+
+
+    bn::sprite_animate_action<40> anim_teeter = bn::create_sprite_animate_action_once(jochem_sprite, 1, bn::sprite_items::jochem.tiles_item(), 
+        103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 
+        116, 117, 118, 119, 120, 121, 122, 121, 120, 119, 118, 117, 116, 
+        115, 114, 113, 112, 111, 110, 109, 108, 107, 106, 105, 104, 103
+    );
+
+    bn::sprite_animate_action<12> anim_fall_roll = bn::create_sprite_animate_action_once(jochem_sprite, 1, bn::sprite_items::jochem.tiles_item(), 
+        143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154
     );
 
 
