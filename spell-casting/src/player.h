@@ -25,7 +25,9 @@ struct Player {
     bool is_running;
     bool is_crouching;
     bool is_sliding;
-    
+    bool is_near_edge;
+    bool just_landed;
+
     bool flipped;
 
     int kick_timer = 0;
@@ -64,6 +66,9 @@ struct Player {
     {
         // Watch for gravity
         int player_tile_index = get_map_tile_index_at_position(position, map_item);
+        int player_tile_index_left = get_map_tile_index_at_position(position + bn::fixed_point(-12,0), map_item);
+        int player_tile_index_right = get_map_tile_index_at_position(position + bn::fixed_point(12,0), map_item);
+
         // int ground_tiles[] = {15, 16, 17, 18, 19, 1, 2};
         int ground_tiles[] = {17, 18, 40, 41, 42, 43};
         bool on_ground = false;
@@ -81,9 +86,15 @@ struct Player {
 
         // can fall
         if (on_ground) {
+            if (player_tile_index_left == 0 || player_tile_index_right == 0) {
+                is_near_edge = true;
+            } else {
+                is_near_edge = false;
+            }
+
             if (is_jumping && velocity.y() > 0) {
                 is_jumping = false;
-                // anim_jump_down.reset();
+                anim_jump_down.reset();
                 anim_fall_roll.reset();
             }
             
@@ -99,7 +110,7 @@ struct Player {
             is_jumping = true;
             velocity.set_y(jump_velocity);
             anim_jump_up.reset();
-            // anim_jump_down.reset();
+            anim_jump_down.reset();
             anim_fall_roll.reset();
         }
         
@@ -238,6 +249,8 @@ struct Player {
         if (is_running && !is_jumping) {
             if (is_sliding && !anim_slide.done()) {
                 anim_slide.update();
+            } else if (!anim_fall_roll.done()) {
+                anim_fall_roll.update();
             } else {
                 anim_run.update();
             }
@@ -252,10 +265,14 @@ struct Player {
             } else {
                 anim_jump_up.update();
             }
-        } else if (on_ground && !anim_fall_roll.done()) {
-            anim_fall_roll.update();
+        } else if (on_ground && !anim_jump_down.done()) {
+            // anim_fall_roll.update();
+            anim_jump_down.update();
         }
-         else {
+        else if (is_near_edge) {
+            anim_teeter.update();
+        }
+        else {
             anim_idle.update();
         }
     }
@@ -311,14 +328,13 @@ struct Player {
     );
 
 
-    bn::sprite_animate_action<40> anim_teeter = bn::create_sprite_animate_action_once(jochem_sprite, 1, bn::sprite_items::jochem.tiles_item(), 
-        103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 
-        116, 117, 118, 119, 120, 121, 122, 121, 120, 119, 118, 117, 116, 
-        115, 114, 113, 112, 111, 110, 109, 108, 107, 106, 105, 104, 103
+    bn::sprite_animate_action<40> anim_teeter = bn::create_sprite_animate_action_forever(jochem_sprite, 1, bn::sprite_items::jochem.tiles_item(), 
+        123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142,
+        142, 141, 140, 139, 138, 137, 136, 135, 134, 133, 132, 131, 130, 129, 128, 127, 126, 125, 124, 123
     );
 
-    bn::sprite_animate_action<12> anim_fall_roll = bn::create_sprite_animate_action_once(jochem_sprite, 1, bn::sprite_items::jochem.tiles_item(), 
-        143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154
+    bn::sprite_animate_action<10> anim_fall_roll = bn::create_sprite_animate_action_once(jochem_sprite, 1, bn::sprite_items::jochem.tiles_item(), 
+        143, 144, 145, 146, 147, 148, 149, 150, 151, 152
     );
 
 
