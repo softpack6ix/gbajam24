@@ -45,9 +45,18 @@
 
 
 
-enum MultiplayerVariables {
-    x, y, graphics_index, flip
-};
+namespace multiplayer {
+    enum MultiplayerVariables {
+        x, y, graphics_index, flip
+    };    
+
+
+    int last_x;
+    int last_y;
+    int last_flip;
+    int last_graphics_index;
+}
+
 
 union multiplayer_data {
     struct {
@@ -60,10 +69,6 @@ union multiplayer_data {
 };
 
 
-int last_x;
-int last_y;
-int last_flip;
-int last_graphics_index;
 
 
 
@@ -117,20 +122,12 @@ int main()
     int frame = 0;
 
 
+    // Multiplayer
     int players_counter;
     int current_player_id;
-
-
     bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
-    bn::bg_palettes::set_transparent_color(bn::color(16, 16, 16));
-
-    bn::string_view info_text_lines[] = {
-        "PAD: move other player's ninja",
-    };
-
-    common::info info("Link communication", info_text_lines, text_generator);
-
-
+    bn::vector<bn::sprite_ptr, 64> info_text_sprites;
+    text_generator.set_center_alignment();
 
     while(true)
     {
@@ -146,46 +143,55 @@ int main()
 
 
 
+
+
         // Multiplayer
-        if (frame % 4 == 0) {
-            last_x = send_link_value_if_changed(x, last_x, player.jochem_sprite.x().floor_integer());
-            last_y = send_link_value_if_changed(y, last_y, player.jochem_sprite.y().floor_integer());
-            last_flip = send_link_value_if_changed(flip, last_y, player.jochem_sprite.horizontal_flip());
-            last_graphics_index = send_link_value_if_changed(graphics_index, last_graphics_index, player.current_anim_frame);
+        if (frame % 2 == 0) {
+            multiplayer::last_x = send_link_value_if_changed(multiplayer::x, multiplayer::last_x, player.jochem_sprite.x().floor_integer());
+            multiplayer::last_y = send_link_value_if_changed(multiplayer::y, multiplayer::last_y, player.jochem_sprite.y().floor_integer());
+            multiplayer::last_flip = send_link_value_if_changed(multiplayer::flip, multiplayer::last_flip, player.jochem_sprite.horizontal_flip());
         }
 
+        // Send animation updates less frequently?
+        if (frame % 4 == 0) {
+            multiplayer::last_graphics_index = send_link_value_if_changed(multiplayer::graphics_index, multiplayer::last_graphics_index, player.current_anim_frame);
+        }
         
-        
-
         if(bn::optional<bn::link_state> link_state = bn::link::receive())
         {
-            players_counter = link_state->player_count();
-            current_player_id = link_state->current_player_id();
+            // Update multiplayer info text
+            if (players_counter != link_state->player_count() || current_player_id != link_state->current_player_id()) {
+                players_counter = link_state->player_count();
+                current_player_id = link_state->current_player_id();
+
+                bn::string<200> info_text =  bn::format<60>("players: {}, player id: {}", players_counter, current_player_id);
+                info_text_sprites.clear();
+                text_generator.generate(0, 65, info_text, info_text_sprites);
+            }
+
+            // Apply data received
             const bn::link_player& first_other_player = link_state->other_players().front();
-            
             multiplayer_data data_received;
             data_received.data = first_other_player.data();
 
             BN_LOG(bn::format<60>("RECEIVED var: {}, negative: {}, value: {}", data_received.multiplayer_struct.var, data_received.multiplayer_struct.negative, data_received.multiplayer_struct.value));
 
-            int val = data_received.multiplayer_struct.value;
-            if (data_received.multiplayer_struct.negative) {
-                val *= -1;
-            }
+            int val = data_received.multiplayer_struct.negative ? -data_received.multiplayer_struct.value : data_received.multiplayer_struct.value;
+            
 
-            if (data_received.multiplayer_struct.var == x) {
+            if (data_received.multiplayer_struct.var == multiplayer::x) {
                 other_player_sprite.set_x(val);
             }
 
-            if (data_received.multiplayer_struct.var == y) {
+            if (data_received.multiplayer_struct.var == multiplayer::y) {
                 other_player_sprite.set_y(val);
             }
 
-            if (data_received.multiplayer_struct.var == flip) {
+            if (data_received.multiplayer_struct.var == multiplayer::flip) {
                 other_player_sprite.set_horizontal_flip(val);
             }
 
-            if (data_received.multiplayer_struct.var == graphics_index) {
+            if (data_received.multiplayer_struct.var == multiplayer::graphics_index) {
                 other_player_sprite.set_tiles(bn::sprite_items::jochem_evil.tiles_item().create_tiles(val)); 
             }
         }
