@@ -33,6 +33,8 @@ struct Player {
 
     int kick_timer = 0;
 
+    int current_anim_frame = 0;
+
     // bolt
     bn::fixed bolt_x = -25;
     bn::fixed bolt_vx = 8;
@@ -43,7 +45,7 @@ struct Player {
     // methods
     Player(bn::camera_ptr cam, bn::fixed grav) 
     {
-        position = bn::fixed_point(-8,0);
+        position = bn::fixed_point(0,0);
         velocity = bn::fixed_point(0,0);
         gravity = grav;
 
@@ -273,6 +275,7 @@ struct Player {
                 anim_slide.update();
             } else {
                 anim_run.update();
+                current_anim_frame = anim_run.current_graphics_index();
             }
         }
 
@@ -299,7 +302,7 @@ struct Player {
 
 
 
-
+    public:
 
     // sprites
     bn::sprite_ptr jochem_sprite = bn::sprite_items::jochem.create_sprite(0, 0);
