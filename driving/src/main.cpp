@@ -74,10 +74,13 @@ struct Van
             direction+=.01;
         }
 
-        if (bn::keypad::up_held() && acceleration < max_acceleration) {
+        if (bn::keypad::a_held() && acceleration < max_acceleration) {
             acceleration += .5;   
         }
 
+        if (bn::keypad::b_held() && acceleration > -max_acceleration) {
+            acceleration -= .5;   
+        }
         
         bn::pair<bn::fixed, bn::fixed> sin_cos = bn::sin_and_cos(direction - .75);
         position += bn::fixed_point(sin_cos.second, sin_cos.first) * acceleration;
