@@ -267,35 +267,43 @@ struct Player {
             if (anim_fall_roll.done()) {
                 is_rolling = false;
             } else {
+                current_anim_frame = anim_fall_roll.current_graphics_index();
                 anim_fall_roll.update();
             }
         }
         else if (is_running && !is_jumping) {
             if (is_sliding && !anim_slide.done()) {
+                current_anim_frame = anim_slide.current_graphics_index();
                 anim_slide.update();
             } else {
-                anim_run.update();
                 current_anim_frame = anim_run.current_graphics_index();
+                anim_run.update();
             }
         }
 
         else if (is_kicking && !anim_kick.done()) {
+            current_anim_frame = anim_kick.current_graphics_index();
             anim_kick.update();
         } 
         else if (is_jumping) {
             if (anim_jump_up.done()) {
+                current_anim_frame = anim_jump_stay.current_graphics_index();
                 anim_jump_stay.update();
             } else {
+                current_anim_frame = anim_jump_up.current_graphics_index();
                 anim_jump_up.update();
             }
         } else if (on_ground && !anim_jump_down.done()) {
             // anim_fall_roll.update();
+            current_anim_frame = anim_jump_down.current_graphics_index();
             anim_jump_down.update();
         }
         else if (is_near_edge) {
+            current_anim_frame = anim_teeter.current_graphics_index();
             anim_teeter.update();
         }
         else {
+            current_anim_frame = anim_idle.current_graphics_index();
             anim_idle.update();
         }
     }

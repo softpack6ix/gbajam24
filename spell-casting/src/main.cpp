@@ -65,6 +65,31 @@ int last_y;
 int last_flip;
 int last_graphics_index;
 
+
+
+int send_link_value_if_changed(int var, int last_val, int new_val) {
+    multiplayer_data data_to_send;
+
+    bool is_negative = new_val < 0;
+
+    if (new_val != last_val) {
+        data_to_send.multiplayer_struct = {
+            var: var, 
+            negative: is_negative,
+            value: abs(new_val)
+        };
+
+        BN_LOG(bn::format<60>("SENT var: {}, negative: {}, value: {}", data_to_send.multiplayer_struct.var, data_to_send.multiplayer_struct.negative, data_to_send.multiplayer_struct.value));
+        bn::link::send(data_to_send.data);
+
+        return new_val;
+    }
+
+    return last_val;     
+}
+
+
+
 int main()
 {
     bn::core::init();
@@ -109,6 +134,8 @@ int main()
 
     while(true)
     {
+        frame++;
+
         player.update(map_item);
         
         // Smooth cam
@@ -120,70 +147,11 @@ int main()
 
 
         // Multiplayer
-        if (true) {
-            multiplayer_data data_to_send;
-
-
-            int x_to_send = player.jochem_sprite.x().floor_integer();
-            if (x_to_send != last_x) {
-                data_to_send.multiplayer_struct = {
-                    var: x, 
-                    negative: false,
-                    value: x_to_send
-                };
-
-                last_x = x_to_send;
-                
-                BN_LOG(bn::format<60>("SENT var: {}, negative: {}, value: {}", data_to_send.multiplayer_struct.var, data_to_send.multiplayer_struct.negative, data_to_send.multiplayer_struct.value));
-                bn::link::send(data_to_send.data);
-            }
-
-
-            int y_to_send = player.jochem_sprite.y().floor_integer();
-            if (y_to_send != last_y) {
-                data_to_send.multiplayer_struct = {
-                    var: y, 
-                    negative: false,
-                    value: y_to_send
-                };
-
-                last_y = y_to_send;
-                
-                BN_LOG(bn::format<60>("SENT var: {}, negative: {}, value: {}", data_to_send.multiplayer_struct.var, data_to_send.multiplayer_struct.negative, data_to_send.multiplayer_struct.value));
-                bn::link::send(data_to_send.data);
-            }
-
-
-            int flip_to_send = player.jochem_sprite.horizontal_flip();
-            if (flip_to_send != last_flip) {
-                data_to_send.multiplayer_struct = {
-                    var: flip, 
-                    negative: false,
-                    value: flip_to_send
-                };
-
-                last_flip = flip_to_send;
-                
-                BN_LOG(bn::format<60>("SENT var: {}, negative: {}, value: {}", data_to_send.multiplayer_struct.var, data_to_send.multiplayer_struct.negative, data_to_send.multiplayer_struct.value));
-                bn::link::send(data_to_send.data);
-            }
-
-            int graphics_index_to_send = player.current_anim_frame;
-            if (graphics_index_to_send != last_graphics_index) {
-                data_to_send.multiplayer_struct = {
-                    var: graphics_index, 
-                    negative: false,
-                    value: last_graphics_index
-                };
-
-                last_graphics_index = graphics_index_to_send;
-                
-                BN_LOG(bn::format<60>("SENT var: {}, negative: {}, value: {}", data_to_send.multiplayer_struct.var, data_to_send.multiplayer_struct.negative, data_to_send.multiplayer_struct.value));
-                bn::link::send(data_to_send.data);
-            }
-
-            // player.jochem_sprite.tiles()
-
+        if (frame % 4 == 0) {
+            last_x = send_link_value_if_changed(x, last_x, player.jochem_sprite.x().floor_integer());
+            last_y = send_link_value_if_changed(y, last_y, player.jochem_sprite.y().floor_integer());
+            last_flip = send_link_value_if_changed(flip, last_y, player.jochem_sprite.horizontal_flip());
+            last_graphics_index = send_link_value_if_changed(graphics_index, last_graphics_index, player.current_anim_frame);
         }
 
         
@@ -200,20 +168,25 @@ int main()
 
             BN_LOG(bn::format<60>("RECEIVED var: {}, negative: {}, value: {}", data_received.multiplayer_struct.var, data_received.multiplayer_struct.negative, data_received.multiplayer_struct.value));
 
+            int val = data_received.multiplayer_struct.value;
+            if (data_received.multiplayer_struct.negative) {
+                val *= -1;
+            }
+
             if (data_received.multiplayer_struct.var == x) {
-                other_player_sprite.set_x(data_received.multiplayer_struct.value);
+                other_player_sprite.set_x(val);
             }
 
             if (data_received.multiplayer_struct.var == y) {
-                other_player_sprite.set_y(data_received.multiplayer_struct.value);
+                other_player_sprite.set_y(val);
             }
 
             if (data_received.multiplayer_struct.var == flip) {
-                other_player_sprite.set_horizontal_flip(data_received.multiplayer_struct.value);
+                other_player_sprite.set_horizontal_flip(val);
             }
 
             if (data_received.multiplayer_struct.var == graphics_index) {
-                // other_player_sprite.set_tiles(bn::sprite_items::jochem_evil.tiles_item().find_tiles()) 
+                other_player_sprite.set_tiles(bn::sprite_items::jochem_evil.tiles_item().create_tiles(val)); 
             }
         }
         
