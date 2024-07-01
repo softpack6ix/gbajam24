@@ -68,8 +68,8 @@ struct Player {
     {
         // Watch for gravity
         int player_tile_index = get_map_tile_index_at_position(position, map_item);
-        int player_tile_index_left = get_map_tile_index_at_position(position + bn::fixed_point(-12,0), map_item);
-        int player_tile_index_right = get_map_tile_index_at_position(position + bn::fixed_point(12,0), map_item);
+        int player_tile_index_left = get_map_tile_index_at_position(position + bn::fixed_point(-8,0), map_item);
+        int player_tile_index_right = get_map_tile_index_at_position(position + bn::fixed_point(8,0), map_item);
 
         // int ground_tiles[] = {15, 16, 17, 18, 19, 1, 2};
         int ground_tiles[] = {17, 18, 40, 41, 42, 43};
@@ -90,7 +90,7 @@ struct Player {
         if (on_ground) {
             if (just_landed) {
                 just_landed = false;
-                if (is_running) {
+                if (is_running && !is_sliding) {
                     is_rolling = true;
                 }
             }
@@ -132,6 +132,7 @@ struct Player {
         if (is_running && bn::keypad::b_pressed()) {
             is_sliding = true;
             anim_slide.reset();
+            // dust_sliding_action.reset();
         }
 
         if (is_sliding) {

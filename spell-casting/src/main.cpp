@@ -45,28 +45,6 @@
 
 
 
-bool camera_moving_to_point = false;
-int cam_follow_margin = 3;
-
-
-void camera_follow_smooth(bn::camera_ptr cam, bn::fixed_point position) 
-{
-    if (bn::abs(cam.x() - position.x()) > bn::display::width() / cam_follow_margin || 
-        bn::abs(cam.y() - position.y()) > bn::display::height() / cam_follow_margin) {
-        camera_moving_to_point = true;
-    }
-
-    if (camera_moving_to_point) {
-        cam.set_x(lerp(position.x(), cam.x(), 0.95));
-        cam.set_y(lerp(position.y(), cam.y(), 0.95));
-
-        if (bn::abs(cam.x() - position.x()) < 1  &&  bn::abs(cam.y() - position.y()) < 1) {
-            camera_moving_to_point = false;
-        }
-    }
-}
-
-
 int main()
 {
     bn::core::init();

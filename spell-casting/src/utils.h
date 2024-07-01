@@ -4,12 +4,14 @@
 #include "bn_fixed_point.h"
 #include "bn_log.h"
 
-// Utils
+
+/**
+ * Math
+ */
 bn::fixed lerp(bn::fixed a, bn::fixed b, bn::fixed t)
 {
     return a + t * (b - a);
 }
-
 
 int mod(int a, int b) 
 {
@@ -17,9 +19,34 @@ int mod(int a, int b)
 }
 
 
+/**
+ * Camera
+ */
+bool camera_moving_to_point = false;
+int cam_follow_margin = 3;
 
-// map utils 
-// Map (0,0) is top-left but sprite (0,0) is center-center
+void camera_follow_smooth(bn::camera_ptr cam, bn::fixed_point position) 
+{
+    if (bn::abs(cam.x() - position.x()) > bn::display::width() / cam_follow_margin || 
+        bn::abs(cam.y() - position.y()) > bn::display::height() / cam_follow_margin) {
+        camera_moving_to_point = true;
+    }
+
+    if (camera_moving_to_point) {
+        cam.set_x(lerp(position.x(), cam.x(), 0.95));
+        cam.set_y(lerp(position.y(), cam.y(), 0.95));
+
+        if (bn::abs(cam.x() - position.x()) < 1  &&  bn::abs(cam.y() - position.y()) < 1) {
+            camera_moving_to_point = false;
+        }
+    }
+}
+
+
+/**
+ * Map utils
+ * Map (0,0) is top-left but sprite (0,0) is center-center
+ */
 const bn::point get_map_point_at_position(bn::fixed_point pos, bn::regular_bg_map_item map_item) 
 {
     bn::size dimensions = map_item.dimensions();
