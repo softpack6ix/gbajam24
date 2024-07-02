@@ -11,22 +11,25 @@
 #include "bn_regular_bg_builder.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_regular_bg_animate_actions.h"
+#include "bn_log.h"
 
 #include "utils.h"
 
 #include "bn_sprite_items_rein_lario.h"
+#include "bn_sprite_items_jochem_lario.h"
+#include "bn_sprite_items_lario_lario.h"
 
 
 
 
 
 struct CharacterAnimations {
-    bn::sprite_animate_action<40> idle;
+    bn::sprite_animate_action<50> idle;
     bn::sprite_animate_action<40> run;
 
     bn::sprite_animate_action<20> jump_up;
     bn::sprite_animate_action<2> jump_stay;
-    bn::sprite_animate_action<20> jump_down;
+    bn::sprite_animate_action<60> jump_down;
 };
 
 
@@ -44,6 +47,8 @@ struct Player {
     bool is_jumping;
     bool is_running;
     bool flipped;
+    bool is_landing;
+    bool is_falling;
 
 
     // sprites
@@ -55,9 +60,9 @@ struct Player {
         Rein, Jochem, Lario
     };
 
-    Character current_character = Rein;
+    int current_character = Rein;
 
-    CharacterAnimations character_animations[1] = {
+    CharacterAnimations character_animations[3] = {
         CharacterAnimations {
             idle: bn::create_sprite_animate_action_forever(sprite_ptr, 1, bn::sprite_items::rein_lario.tiles_item(), 
                 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37
@@ -66,13 +71,53 @@ struct Player {
                 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55
             ),
             jump_up: bn::create_sprite_animate_action_once(sprite_ptr, 1, bn::sprite_items::rein_lario.tiles_item(), 
-                56, 57, 58, 59, 60, 61, 62
+                56, 57, 58, 59, 60
             ),
             jump_stay: bn::create_sprite_animate_action_forever(sprite_ptr, 1, bn::sprite_items::rein_lario.tiles_item(), 
-                63, 63
+                61, 61
             ),
             jump_down: bn::create_sprite_animate_action_once(sprite_ptr, 1, bn::sprite_items::rein_lario.tiles_item(), 
-                64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75
+                62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83
+            )
+        },
+
+        CharacterAnimations {
+            idle: bn::create_sprite_animate_action_forever(sprite_ptr, 1, bn::sprite_items::jochem_lario.tiles_item(), 
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
+                21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
+                41, 42, 43, 44, 45, 46, 47, 48
+            ),
+            run: bn::create_sprite_animate_action_forever(sprite_ptr, 1, bn::sprite_items::jochem_lario.tiles_item(), 
+                50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64
+            ),
+            jump_up: bn::create_sprite_animate_action_once(sprite_ptr, 1, bn::sprite_items::jochem_lario.tiles_item(), 
+                65, 66, 67, 68, 69
+            ),
+            jump_stay: bn::create_sprite_animate_action_forever(sprite_ptr, 1, bn::sprite_items::jochem_lario.tiles_item(), 
+                70, 70
+            ),
+            jump_down: bn::create_sprite_animate_action_once(sprite_ptr, 1, bn::sprite_items::jochem_lario.tiles_item(), 
+                71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85
+            )
+        },
+
+        CharacterAnimations {
+            idle: bn::create_sprite_animate_action_forever(sprite_ptr, 1, bn::sprite_items::lario_lario.tiles_item(), 
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
+                21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
+                41, 42, 43, 44, 45, 46, 47
+            ),
+            run: bn::create_sprite_animate_action_forever(sprite_ptr, 1, bn::sprite_items::lario_lario.tiles_item(), 
+                48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62
+            ),
+            jump_up: bn::create_sprite_animate_action_once(sprite_ptr, 1, bn::sprite_items::lario_lario.tiles_item(), 
+                63, 64, 65, 66, 67, 68
+            ),
+            jump_stay: bn::create_sprite_animate_action_forever(sprite_ptr, 1, bn::sprite_items::lario_lario.tiles_item(), 
+                69, 69
+            ),
+            jump_down: bn::create_sprite_animate_action_once(sprite_ptr, 1, bn::sprite_items::lario_lario.tiles_item(), 
+                70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96
             )
         }
     };
@@ -102,49 +147,76 @@ struct Player {
 
     void update(bn::regular_bg_map_item map_item) 
     {
+        // character switching 
+        if (bn::keypad::l_pressed()) {
+            current_character -= 1;
+        }
+        
+        if (bn::keypad::r_pressed()) {
+            current_character += 1;
+        }
+
+        if (current_character > 2) current_character = 0;
+        if (current_character < 0) current_character = 2;
+
+
+
         // Watch for gravity
         int player_tile_index = get_map_tile_index_at_position(position, map_item);
         // int ground_tiles[] = {15, 16, 17, 18, 19, 1, 2};
-        int ground_tiles[] = {17, 18, 40, 41, 42, 43};
+        int ground_tiles[] = {1, 2, 3, 4, 16, 17, 18, 19, 20, 21, 22, 23 };
         bool on_ground = false;
+
+        BN_LOG(bn::format<20>("tile: {}", player_tile_index));
        
-    //    for (size_t i = 0; i < 7; i++) {
-    //         if (player_tile_index == ground_tiles[i]) {
-    //             on_ground = true;
-    //         }
-    //    }
-
-        if (player_tile_index != 0) {
-            on_ground = true;
-
-             if (is_jumping && velocity.y() > 0) {
-                is_jumping = false;
+       for (size_t i = 0; i < 12; i++) {
+            if (player_tile_index == ground_tiles[i]) {
+                on_ground = true;
             }
-        }
+       }
+
+        // if (player_tile_index != 0) {
+        //     on_ground = true;
+        // }
        
 
         // platform beneath player 
         if (on_ground) {
+            if ((is_jumping) && velocity.y() > 0) {
+                is_jumping = false;
+                is_landing = true;
+            }
+
+            if (is_falling) {
+                is_falling = false;
+                is_landing = true;
+            }
+
+
             velocity.set_y(bn::min(bn::fixed(0.0), velocity.y()));
         }
         // can fall
         else {
             velocity.set_y(velocity.y() + gravity);
+            is_falling = true;
         }
 
         // jumping and gravity
-        if (bn::keypad::a_pressed() && !is_jumping) {
+        if (bn::keypad::a_pressed() && !is_jumping && on_ground) {
             is_jumping = true;
+            is_landing = false;
             velocity.set_y(jump_velocity);
             character_animations[current_character].jump_down.reset();
             character_animations[current_character].jump_up.reset();
         }
         // running
         if (bn::keypad::left_held()) {
+            is_landing = false;
             velocity.set_x(-run_speed);
             sprite_ptr.set_horizontal_flip(true);
             if (on_ground) {
                 is_running = true;
+                is_landing = false;
             }
         }
 
@@ -152,6 +224,7 @@ struct Player {
             velocity.set_x(run_speed);
             if (on_ground) {
                 is_running = true;
+                is_landing = false;
             }
             sprite_ptr.set_horizontal_flip(false);
         }
@@ -171,17 +244,19 @@ struct Player {
         sprite_ptr.set_position(position.x(), position.y());
 
         // Update the right animation
-        if (is_running && !is_jumping) {
+        if (is_falling && !is_jumping && !is_landing) {
+            character_animations[current_character].jump_stay.update();
+        }
+        else if (is_running && !is_jumping) {
             character_animations[current_character].run.update();
         }
-
         else if (is_jumping) {
             if (character_animations[current_character].jump_up.done()) {
                 character_animations[current_character].jump_stay.update();
             } else {
                 character_animations[current_character].jump_up.update();
             }
-        } else if (on_ground && !character_animations[current_character].jump_down.done()) {
+        } else if (is_landing && !character_animations[current_character].jump_down.done()) {
             character_animations[current_character].jump_down.update();
         }
         else {
