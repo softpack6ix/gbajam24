@@ -134,11 +134,12 @@ int main()
             BN_LOG(bn::format<60>("received: {}", other_player_keypad_data.data));                
 
             // Update multiplayer info text
-            if (players_counter != link_state->player_count() || current_player_id != link_state->current_player_id()) {
+            if (players_counter != link_state->player_count()) {
                 players_counter = link_state->player_count();
                 current_player_id = link_state->current_player_id();
 
-                // other_player.sprite_ptr.set_visible(true);
+                // Immediately refresh the other player as well
+                bn::link::send(keypad_data_to_send.data);   
                 BN_LOG(bn::format<60>("change in link"));                
                 bn::string<60> info_text = bn::format<60>("players: {}, player id: {}", players_counter, current_player_id);
                 info_text_sprites.clear();
