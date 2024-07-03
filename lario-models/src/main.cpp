@@ -60,7 +60,7 @@ int main()
     // Player and other player
     Player player(camera, gravity);
     Player other_player(camera, gravity);
-    other_player.sprite_ptr.set_visible(false);
+
 
     Player players[] = {
         player, other_player
