@@ -93,7 +93,12 @@ int main()
         bn::sprite_items::lipje_item.create_sprite(0+x_offset,y_offset),
         bn::sprite_items::lipje_item.create_sprite(32+x_offset,y_offset),
         bn::sprite_items::lipje_item.create_sprite(64+x_offset,y_offset),
-        bn::sprite_items::lipje_item.create_sprite(96+x_offset,y_offset)
+        bn::sprite_items::lipje_item.create_sprite(96+x_offset,y_offset),
+
+        bn::sprite_items::lipje_item.create_sprite(0+x_offset,-y_offset/2),
+        bn::sprite_items::lipje_item.create_sprite(32+x_offset,-y_offset/2),
+        bn::sprite_items::lipje_item.create_sprite(64+x_offset,-y_offset/2),
+        bn::sprite_items::lipje_item.create_sprite(96+x_offset,-y_offset/2)
     };
 
     bn::sprite_animate_action<60> lipje_actions[] = {
@@ -101,9 +106,13 @@ int main()
         lipje_animation(lipje_sprites[1]),
         lipje_animation(lipje_sprites[2]),
         lipje_animation(lipje_sprites[3]),
+        lipje_animation(lipje_sprites[4]),
+        lipje_animation(lipje_sprites[5]),
+        lipje_animation(lipje_sprites[6]),
+        lipje_animation(lipje_sprites[7]),
     };
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 8; i++) {
         lipje_sprites[i].set_camera(camera);
     }
 
@@ -115,16 +124,16 @@ int main()
 
 
         // Lipje
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 8; i++) {
             bn::sprite_ptr lip_spr = lipje_sprites[i];
             lipje_actions[i].update();
 
             if (distance(lip_spr.position(), player.sprite_ptr.position()) < 64) {
-                lip_spr.set_x(lerp(lip_spr.x(), player.sprite_ptr.x(), 0.2));
-                lip_spr.set_y(lerp(lip_spr.y(), player.sprite_ptr.y(), 0.2));
+                lip_spr.set_x(lerp(lip_spr.x(), player.sprite_ptr.x(), 0.3));
+                lip_spr.set_y(lerp(lip_spr.y(), player.sprite_ptr.y(), 0.3));
             }
 
-            if (distance(lip_spr.position(), player.sprite_ptr.position()) < 4 && lip_spr.visible()) {
+            if (distance(lip_spr.position(), player.sprite_ptr.position()) < 8 && lip_spr.visible()) {
                 lip_spr.set_visible(false);
                 pickups[pickup_i].play(1, 1.0, 0.0);
                 pickup_i++;
