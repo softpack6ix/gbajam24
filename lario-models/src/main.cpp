@@ -52,6 +52,20 @@ bn::fixed distance(bn::fixed_point a, bn::fixed_point b)
 }
 
 
+
+struct Pickup {
+    bn::fixed_point position; 
+    bn::sprite_ptr spr;
+    bn::sprite_animate_action<60> anim;
+    bn::sound_item sound;
+};
+
+
+struct Lipje : Pickup {
+    
+};
+
+
 int main()
 {
     bn::core::init();
@@ -109,7 +123,7 @@ int main()
         lipje_animation(lipje_sprites[4]),
         lipje_animation(lipje_sprites[5]),
         lipje_animation(lipje_sprites[6]),
-        lipje_animation(lipje_sprites[7]),
+        lipje_animation(lipje_sprites[7])
     };
 
     for (int i = 0; i < 8; i++) {
@@ -128,12 +142,14 @@ int main()
             bn::sprite_ptr lip_spr = lipje_sprites[i];
             lipje_actions[i].update();
 
-            if (distance(lip_spr.position(), player.sprite_ptr.position()) < 64) {
-                lip_spr.set_x(lerp(lip_spr.x(), player.sprite_ptr.x(), 0.3));
-                lip_spr.set_y(lerp(lip_spr.y(), player.sprite_ptr.y(), 0.3));
+            bn::fixed dist = distance(lip_spr.position(), player.sprite_ptr.position());
+            if (dist < 64) {
+                lip_spr.set_x(lerp(lip_spr.x(), player.sprite_ptr.x(), 0.2));
+                lip_spr.set_y(lerp(lip_spr.y(), player.sprite_ptr.y(), 0.2));
+                lip_spr.set_scale(dist / 64.0);
             }
 
-            if (distance(lip_spr.position(), player.sprite_ptr.position()) < 8 && lip_spr.visible()) {
+            if (dist < 8 && lip_spr.visible()) {
                 lip_spr.set_visible(false);
                 pickups[pickup_i].play(1, 1.0, 0.0);
                 pickup_i++;
