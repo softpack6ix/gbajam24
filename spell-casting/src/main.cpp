@@ -1,6 +1,4 @@
 #include "bn_core.h"
-
-#include "bn_core.h"
 #include "bn_math.h"
 #include "bn_keypad.h"
 #include "bn_bg_palettes.h"
@@ -44,12 +42,26 @@
 #include "utils.h"
 
 
+#define BN_CFG_LINK_BAUD_RATE BN_LINK_BAUD_RATE_115200_BPS
+// #define LOG
+
 
 namespace multiplayer {
     enum MultiplayerVariables {
         x, y, graphics_index, flip
     };    
 
+    // A struct and union to send data that a single 
+    // value has changed
+    union value_changed_union {
+        struct {
+            int var : 4;
+            bool negative : 1;
+            int value : 10;
+        } value_changed_struct;
+
+        int data = 0;
+    };
 
     int last_x;
     int last_y;
@@ -58,33 +70,25 @@ namespace multiplayer {
 }
 
 
-union multiplayer_data {
-    struct {
-        int var : 4;
-        bool negative : 1;
-        int value : 12;
-    } multiplayer_struct;
-
-    int data = 0;
-};
 
 
-
-
-
-int send_link_value_if_changed(int var, int last_val, int new_val) {
-    multiplayer_data data_to_send;
-
-    bool is_negative = new_val < 0;
+int send_link_value_if_changed(int var, int last_val, int new_val) 
+{
+    multiplayer::value_changed_union data_to_send;
 
     if (new_val != last_val) {
-        data_to_send.multiplayer_struct = {
+        bool is_negative = new_val < 0;
+        
+        data_to_send.value_changed_struct = {
             var: var, 
             negative: is_negative,
             value: abs(new_val)
         };
+        
+        #ifdef LOG
+        BN_LOG(bn::format<60>("SENT var: {}, negative: {}, value: {}", data_to_send.value_changed_struct.var, data_to_send.value_changed_struct.negative, data_to_send.value_changed_struct.value));
+        #endif
 
-        BN_LOG(bn::format<60>("SENT var: {}, negative: {}, value: {}", data_to_send.multiplayer_struct.var, data_to_send.multiplayer_struct.negative, data_to_send.multiplayer_struct.value));
         bn::link::send(data_to_send.data);
 
         return new_val;
@@ -171,27 +175,28 @@ int main()
 
             // Apply data received
             const bn::link_player& first_other_player = link_state->other_players().front();
-            multiplayer_data data_received;
+            multiplayer::value_changed_union data_received;
             data_received.data = first_other_player.data();
 
-            BN_LOG(bn::format<60>("RECEIVED var: {}, negative: {}, value: {}", data_received.multiplayer_struct.var, data_received.multiplayer_struct.negative, data_received.multiplayer_struct.value));
+            #ifdef LOG
+            BN_LOG(bn::format<60>("RECEIVED var: {}, negative: {}, value: {}", data_received.value_changed_struct.var, data_received.value_changed_struct.negative, data_received.value_changed_struct.value));
+            #endif
 
-            int val = data_received.multiplayer_struct.negative ? -data_received.multiplayer_struct.value : data_received.multiplayer_struct.value;
+            int val = data_received.value_changed_struct.negative ? -data_received.value_changed_struct.value : data_received.value_changed_struct.value;
             
-
-            if (data_received.multiplayer_struct.var == multiplayer::x) {
+            if (data_received.value_changed_struct.var == multiplayer::x) {
                 other_player_sprite.set_x(val);
             }
 
-            if (data_received.multiplayer_struct.var == multiplayer::y) {
+            if (data_received.value_changed_struct.var == multiplayer::y) {
                 other_player_sprite.set_y(val);
             }
 
-            if (data_received.multiplayer_struct.var == multiplayer::flip) {
+            if (data_received.value_changed_struct.var == multiplayer::flip) {
                 other_player_sprite.set_horizontal_flip(val);
             }
 
-            if (data_received.multiplayer_struct.var == multiplayer::graphics_index) {
+            if (data_received.value_changed_struct.var == multiplayer::graphics_index) {
                 other_player_sprite.set_tiles(bn::sprite_items::jochem_evil.tiles_item().create_tiles(val)); 
             }
         }

@@ -4,25 +4,19 @@
 #include "bn_bg_palettes.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_sprite_animate_actions.h"
-#include "bn_regular_bg_actions.h"
-#include "bn_regular_bg_builder.h"
-#include "bn_regular_bg_attributes.h"
 #include "bn_regular_bg_map_cell_info.h"
 #include "bn_sprite_text_generator.h"
-#include "bn_regular_bg_animate_actions.h"
-#include "bn_regular_bg_position_hbe_ptr.h"
-#include "bn_regular_bg_attributes_hbe_ptr.h"
 #include "bn_point.h"
 #include "bn_log.h"
 #include "bn_format.h"
 #include "bn_math.h"
 #include "bn_display.h"
-#include "bn_link.h"
-#include "bn_link_state.h"
+
 
 // BGs
 #include "bn_regular_bg_items_tilemap.h"
 #include "bn_regular_bg_items_sky.h"
+#include "bn_regular_bg_items_clouds.h"
 
 // Sprites
 
@@ -48,21 +42,28 @@ int main()
 
     // BG and map
     bn::regular_bg_ptr sky = bn::regular_bg_items::sky.create_bg(0, 0);
+    bn::regular_bg_ptr clouds = bn::regular_bg_items::clouds.create_bg(0, 0);
     bn::regular_bg_ptr tilemap = bn::regular_bg_items::tilemap.create_bg(bn::display::width() / 2, bn::display::height() / 2);
     const bn::regular_bg_map_item& map_item = bn::regular_bg_items::tilemap.map_item();
 
     // Camera    
     bn::camera_ptr camera = bn::camera_ptr::create(0, 0);
     tilemap.set_camera(camera);
+    // clouds.set_camera(camera);
     
     // Jochem player
     Player player(camera, gravity);
 
+    int clouds_x = 0.0;
 
     while(true)
     {
+        clouds_x -=  0.1;
         player.update(map_item);
         
+        // Moving clouds
+        clouds.set_x(clouds_x + player.position.x() / bn::fixed(40.0));
+
         // Smooth cam
         camera_follow_smooth(camera, player.sprite_ptr.position());
 

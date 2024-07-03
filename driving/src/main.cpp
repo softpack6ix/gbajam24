@@ -4,22 +4,14 @@
 #include "bn_bg_palettes.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_sprite_animate_actions.h"
-#include "bn_regular_bg_actions.h"
 #include "bn_regular_bg_builder.h"
-#include "bn_regular_bg_attributes.h"
-#include "bn_regular_bg_map_cell_info.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_regular_bg_animate_actions.h"
-#include "bn_regular_bg_position_hbe_ptr.h"
-#include "bn_regular_bg_attributes_hbe_ptr.h"
 #include "bn_point.h"
 #include "bn_log.h"
 #include "bn_format.h"
 #include "bn_math.h"
 #include "bn_display.h"
-#include "bn_link.h"
-#include "bn_link_state.h"
-
 
 #include "bn_sprite_items_van_80.h"
 #include "bn_regular_bg_items_grid.h"
@@ -66,7 +58,8 @@ struct Van
     bn::sprite_ptr sprite = bn::sprite_items::van_80.create_sprite(0, 0);
 
     // methods
-    void update() {
+    void update() 
+    {
         if (bn::keypad::left_held()) {
             direction-=.01;
         }
@@ -86,7 +79,6 @@ struct Van
         position += bn::fixed_point(sin_cos.second, sin_cos.first) * acceleration;
         
         acceleration = acceleration.multiplication(drag);
-
 
         if (direction > 1.0) direction = 0.0;
         if (direction < 0.0) direction = 1.0;
@@ -110,18 +102,17 @@ int main()
     // bg
     bn::regular_bg_ptr grid_bg = bn::regular_bg_items::grid.create_bg(0,0);
 
+
     bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
     bn::bg_palettes::set_transparent_color(bn::color(0, 15, 15));
-
     constexpr bn::string_view info_text_lines[] = {
         "PAD: change sprite's direction",
         ""
     };
-
     common::info info("Driving demo", info_text_lines, text_generator);
 
 
-   // Camera    
+    // Camera    
     bn::camera_ptr camera = bn::camera_ptr::create(0, 0);
     van.sprite.set_camera(camera);
     grid_bg.set_camera(camera);

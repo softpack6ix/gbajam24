@@ -5,7 +5,6 @@
 #include "bn_keypad.h"
 #include "bn_regular_bg_map_item.h"
 #include "bn_sprite_items_jochem.h"
-#include "bn_sprite_items_dust_sliding.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_sprite_animate_actions.h"
 #include "bn_regular_bg_builder.h"

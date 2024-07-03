@@ -19,7 +19,6 @@
 #include "common_variable_8x16_sprite_font.h"
 
 
-#define BN_CFG_LINK_BAUD_RATE BN_LINK_BAUD_RATE_115200_BPS
 
 namespace
 {
