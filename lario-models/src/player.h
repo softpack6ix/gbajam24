@@ -32,6 +32,19 @@ struct CharacterAnimations {
 };
 
 
+union MultiplayerKeypadData {
+    struct KeypadData {
+        int l_pressed : 1;
+        int r_pressed : 1;
+        int a_pressed : 1;
+
+        int left_held : 1;
+        int right_held : 1;
+    } keypad_data;
+    
+    int data;
+};
+
 
 
 struct Player {
@@ -51,7 +64,7 @@ struct Player {
 
 
     // sprites
-    bn::sprite_item sprite_item = bn::sprite_items::jochem;
+    bn::sprite_item sprite_item = bn::sprite_items::jochem_lario;
     bn::sprite_ptr sprite_ptr = sprite_item.create_sprite(0, 0);
 
 
@@ -138,35 +151,27 @@ struct Player {
 
 
 
-    void switch_character()
-    {
-
-    }
-
-
-    void update(bn::regular_bg_map_item map_item) 
+    void update(bn::regular_bg_map_item map_item, MultiplayerKeypadData::KeypadData keypad_data) 
     {
         // character switching 
-        if (bn::keypad::l_pressed()) {
+        if (keypad_data.l_pressed) {
             current_character -= 1;
         }
         
-        if (bn::keypad::r_pressed()) {
+        if (keypad_data.r_pressed) {
             current_character += 1;
         }
-
+        
         if (current_character > 2) current_character = 0;
         if (current_character < 0) current_character = 2;
 
 
-
         // Watch for gravity
         int player_tile_index = get_map_tile_index_at_position(position, map_item);
-        // int ground_tiles[] = {15, 16, 17, 18, 19, 1, 2};
         int ground_tiles[] = {1, 2, 3, 4, 16, 17, 18, 19, 20, 21, 22, 23 };
         bool on_ground = false;
 
-        BN_LOG(bn::format<20>("tile: {}", player_tile_index));
+        // BN_LOG(bn::format<20>("tile: {}", player_tile_index));
        
        for (size_t i = 0; i < 12; i++) {
             if (player_tile_index == ground_tiles[i]) {
@@ -201,7 +206,7 @@ struct Player {
         }
 
         // jumping and gravity
-        if (bn::keypad::a_pressed() && !is_jumping && on_ground) {
+        if (keypad_data.a_pressed && !is_jumping && on_ground) {
             is_jumping = true;
             is_landing = false;
             velocity.set_y(jump_velocity);
@@ -209,7 +214,7 @@ struct Player {
             character_animations[current_character].jump_up.reset();
         }
         // running
-        if (bn::keypad::left_held()) {
+        if (keypad_data.left_held) {
             is_landing = false;
             velocity.set_x(-run_speed);
             sprite_ptr.set_horizontal_flip(true);
@@ -219,7 +224,7 @@ struct Player {
             }
         }
 
-        if (bn::keypad::right_held()) {
+        if (keypad_data.right_held) {
             velocity.set_x(run_speed);
             if (on_ground) {
                 is_running = true;
@@ -228,7 +233,7 @@ struct Player {
             sprite_ptr.set_horizontal_flip(false);
         }
         
-        if (!bn::keypad::left_held() && !bn::keypad::right_held()) {
+        if (!keypad_data.left_held && !keypad_data.right_held) {
             velocity.set_x(0);
             if (is_running) {
                 is_running = false;
