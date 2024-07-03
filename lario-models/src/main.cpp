@@ -23,6 +23,8 @@
 #include "bn_regular_bg_items_clouds.h"
 
 // Sprites
+#include "bn_sprite_items_lipje_item.h"
+
 
 
 // Font
@@ -33,6 +35,15 @@
 #include "player.h"
 #include "utils.h"
 
+
+bn::sprite_animate_action<60> lipje_animation(bn::sprite_ptr spr) 
+{
+    return bn::create_sprite_animate_action_forever(spr, 1, bn::sprite_items::lipje_item.tiles_item(),
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
+        41, 42, 43, 44, 45, 46, 47, 48, 49, 50
+    );
+}
 
 
 
@@ -58,6 +69,8 @@ int main()
     // Jochem player
     Player player(camera, gravity);
 
+
+    // Lipje pickup sounds
     int clouds_x = 0.0;
     int pickup_i;
 
@@ -68,15 +81,46 @@ int main()
         bn::sound_items::pickup_4
     };
 
+    int x_offset = 140;
+    int y_offset = 126;
+
+    bn::sprite_ptr lipje_sprites[] = {
+        bn::sprite_items::lipje_item.create_sprite(0+x_offset,y_offset),
+        bn::sprite_items::lipje_item.create_sprite(32+x_offset,y_offset),
+        bn::sprite_items::lipje_item.create_sprite(64+x_offset,y_offset),
+        bn::sprite_items::lipje_item.create_sprite(96+x_offset,y_offset)
+    };
+
+    bn::sprite_animate_action<60> lipje_actions[] = {
+        lipje_animation(lipje_sprites[0]),
+        lipje_animation(lipje_sprites[1]),
+        lipje_animation(lipje_sprites[2]),
+        lipje_animation(lipje_sprites[3]),
+    };
+
+    for (int i = 0; i < 4; i++) {
+        lipje_sprites[i].set_camera(camera);
+    }
+
+
     while(true)
     {
         clouds_x -=  0.1;
         player.update(map_item);
 
-        if (bn::keypad::l_pressed()) {
-            pickups[pickup_i].play(1, 1.0, 0.0);
-            pickup_i++;
-            pickup_i = pickup_i % 4;
+
+        // Lipje
+        for (int i = 0; i < 4; i++) {
+            lipje_actions[i].update();
+
+            if (abs(lipje_sprites[i].x() - player.sprite_ptr.x()) < 8 && 
+                abs(lipje_sprites[i].y() - player.sprite_ptr.y()) < 8 &&
+                lipje_sprites[i].visible()) {
+                lipje_sprites[i].set_visible(false);
+                pickups[pickup_i].play(1, 1.0, 0.0);
+                pickup_i++;
+                pickup_i = pickup_i % 4;
+            }
         }
         
         // Moving clouds
