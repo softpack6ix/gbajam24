@@ -46,6 +46,11 @@ bn::sprite_animate_action<60> lipje_animation(bn::sprite_ptr spr)
 }
 
 
+bn::fixed distance(bn::fixed_point a, bn::fixed_point b) 
+{
+    return abs(a.x() - b.x()) + abs(a.y() - b.y());
+}
+
 
 int main()
 {
@@ -111,12 +116,16 @@ int main()
 
         // Lipje
         for (int i = 0; i < 4; i++) {
+            bn::sprite_ptr lip_spr = lipje_sprites[i];
             lipje_actions[i].update();
 
-            if (abs(lipje_sprites[i].x() - player.sprite_ptr.x()) < 8 && 
-                abs(lipje_sprites[i].y() - player.sprite_ptr.y()) < 8 &&
-                lipje_sprites[i].visible()) {
-                lipje_sprites[i].set_visible(false);
+            if (distance(lip_spr.position(), player.sprite_ptr.position()) < 64) {
+                lip_spr.set_x(lerp(lip_spr.x(), player.sprite_ptr.x(), 0.2));
+                lip_spr.set_y(lerp(lip_spr.y(), player.sprite_ptr.y(), 0.2));
+            }
+
+            if (distance(lip_spr.position(), player.sprite_ptr.position()) < 4 && lip_spr.visible()) {
+                lip_spr.set_visible(false);
                 pickups[pickup_i].play(1, 1.0, 0.0);
                 pickup_i++;
                 pickup_i = pickup_i % 4;
