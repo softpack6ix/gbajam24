@@ -24,7 +24,6 @@
 #include "bn_regular_bg_items_clouds.h"
 
 // Sprites
-#include "bn_sprite_items_lipje_item.h"
 
 
 // Font
@@ -34,37 +33,8 @@
 // Includes
 #include "player.h"
 #include "utils.h"
+#include "pickups.h"
 
-
-
-bn::sprite_animate_action<60> lipje_animation(bn::sprite_ptr spr) 
-{
-    return bn::create_sprite_animate_action_forever(spr, 1, bn::sprite_items::lipje_item.tiles_item(),
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
-        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
-        41, 42, 43, 44, 45, 46, 47, 48, 49, 50
-    );
-}
-
-
-bn::fixed distance(bn::fixed_point a, bn::fixed_point b) 
-{
-    return abs(a.x() - b.x()) + abs(a.y() - b.y());
-}
-
-
-
-struct Pickup {
-    bn::fixed_point position; 
-    bn::sprite_ptr spr;
-    bn::sprite_animate_action<60> anim;
-    bn::sound_item sound;
-};
-
-
-struct Lipje : Pickup {
-    
-};
 
 
 int main()
@@ -90,6 +60,7 @@ int main()
     // Player and other player
     Player player(camera, gravity);
     Player other_player(camera, gravity);
+    other_player.sprite_ptr.set_visible(false);
 
     Player players[] = {
         player, other_player
@@ -98,44 +69,24 @@ int main()
 
     // Lipje pickup sounds
     int clouds_x = 0.0;
-    int pickup_i;
 
-    bn::sound_item pickup_sounds[] = {
-        bn::sound_items::pickup_1,
-        bn::sound_items::pickup_2,
-        bn::sound_items::pickup_3,
-        bn::sound_items::pickup_4
-    };
 
-    int x_offset = 140;
-    int y_offset = 126;
+    const int x_offset = 140;
+    const int y_offset = 126;
 
-    bn::sprite_ptr lipje_sprites[] = {
-        bn::sprite_items::lipje_item.create_sprite(0+x_offset,y_offset),
-        bn::sprite_items::lipje_item.create_sprite(32+x_offset,y_offset),
-        bn::sprite_items::lipje_item.create_sprite(64+x_offset,y_offset),
-        bn::sprite_items::lipje_item.create_sprite(96+x_offset,y_offset),
+    bn::vector<Pickups::Lipje, 20> pickups;
 
-        bn::sprite_items::lipje_item.create_sprite(0+x_offset,-y_offset/2),
-        bn::sprite_items::lipje_item.create_sprite(32+x_offset,-y_offset/2),
-        bn::sprite_items::lipje_item.create_sprite(64+x_offset,-y_offset/2),
-        bn::sprite_items::lipje_item.create_sprite(96+x_offset,-y_offset/2)
-    };
+    pickups.push_back(Pickups::Lipje(32+x_offset,y_offset, camera));
+    pickups.push_back(Pickups::Lipje(64+x_offset,y_offset, camera));
+    pickups.push_back(Pickups::Lipje(96+x_offset,y_offset, camera));
 
-    bn::sprite_animate_action<60> lipje_actions[] = {
-        lipje_animation(lipje_sprites[0]),
-        lipje_animation(lipje_sprites[1]),
-        lipje_animation(lipje_sprites[2]),
-        lipje_animation(lipje_sprites[3]),
-        lipje_animation(lipje_sprites[4]),
-        lipje_animation(lipje_sprites[5]),
-        lipje_animation(lipje_sprites[6]),
-        lipje_animation(lipje_sprites[7])
-    };
+    pickups.push_back(Pickups::Lipje(0+x_offset,-y_offset/2, camera));
+    pickups.push_back(Pickups::Lipje(32+x_offset,-y_offset/2, camera));
+    pickups.push_back(Pickups::Lipje(64+x_offset,-y_offset/2, camera));
+    pickups.push_back(Pickups::Lipje(96+x_offset,-y_offset/2, camera));
 
-    for (int i = 0; i < 8; i++) {
-        lipje_sprites[i].set_camera(camera);
-    }
+
+
 
     // Multiplayer
     int players_counter;
@@ -150,24 +101,28 @@ int main()
 
     while(true)
     {
-        // Update player
-        MultiplayerKeypadData keypad_data_to_send;
+        // Update player, send keypad to other players
+        MultiplayerKeypadData keypad_data_to_send {
+            keypad_data: MultiplayerKeypadData::KeypadData {
+                l_pressed: bn::keypad::l_pressed(),
+                r_pressed: bn::keypad::r_pressed(),
+                a_pressed: bn::keypad::a_pressed(),
+                left_held: bn::keypad::left_held(),
+                right_held: bn::keypad::right_held()
+            }
+        };
 
-        keypad_data_to_send.keypad_data.l_pressed = bn::keypad::l_pressed();
-        keypad_data_to_send.keypad_data.r_pressed = bn::keypad::r_pressed();
-        keypad_data_to_send.keypad_data.a_pressed = bn::keypad::a_pressed();
-        keypad_data_to_send.keypad_data.left_held = bn::keypad::left_held();
-        keypad_data_to_send.keypad_data.right_held = bn::keypad::right_held();
-
+        // Always update own player
         player.update(map_item, keypad_data_to_send.keypad_data);
 
+        // Send if changed
         if (last_keypad_data_to_send.data != keypad_data_to_send.data) {
             bn::link::send(keypad_data_to_send.data);   
             last_keypad_data_to_send.data = keypad_data_to_send.data;
         }
 
 
-        // Update other player
+        // Update other player, receive keypad from other players
         MultiplayerKeypadData other_player_keypad_data;
 
         if(bn::optional<bn::link_state> link_state = bn::link::receive())
@@ -182,8 +137,10 @@ int main()
             if (players_counter != link_state->player_count() || current_player_id != link_state->current_player_id()) {
                 players_counter = link_state->player_count();
                 current_player_id = link_state->current_player_id();
+
+                // other_player.sprite_ptr.set_visible(true);
                 BN_LOG(bn::format<60>("change in link"));                
-                bn::string<200> info_text =  bn::format<60>("players: {}, player id: {}", players_counter, current_player_id);
+                bn::string<60> info_text = bn::format<60>("players: {}, player id: {}", players_counter, current_player_id);
                 info_text_sprites.clear();
                 text_generator.generate(0, 65, info_text, info_text_sprites);
             }
@@ -193,28 +150,8 @@ int main()
 
 
         // Lipje pickup items
-        for (int i = 0; i < 8; i++) {
-            bn::sprite_ptr lip_spr = lipje_sprites[i];
-            lipje_actions[i].update();
-
-            bn::fixed magnetic_range = 64;
-            
-            // Update for both players
-            for (int i = 0; i < 2; i++) {
-                bn::fixed dist = distance(lip_spr.position(), players[i].sprite_ptr.position());
-                if (dist < magnetic_range) {
-                    lip_spr.set_x(lerp(lip_spr.x(), players[i].sprite_ptr.x(), 0.2));
-                    lip_spr.set_y(lerp(lip_spr.y(), players[i].sprite_ptr.y(), 0.2));
-                    lip_spr.set_scale(dist / magnetic_range);
-                }
-
-                if (dist < 8 && lip_spr.visible()) {
-                    lip_spr.set_visible(false);
-                    pickup_sounds[pickup_i].play(1, 1.0, 0.0);
-                    pickup_i++;
-                    pickup_i = pickup_i % 4;
-                }
-            }
+        for (Pickups::Lipje l : pickups) {
+            l.update(players);
         }
         
         // Moving clouds

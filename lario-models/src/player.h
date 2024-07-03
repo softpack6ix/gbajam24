@@ -1,3 +1,6 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
 #include "bn_core.h"
 #include "bn_point.h"
 #include "bn_fixed_point.h"
@@ -12,13 +15,13 @@
 #include "bn_regular_bg_animate_actions.h"
 #include "bn_log.h"
 
-#include "utils.h"
 
 #include "bn_sprite_items_rein_lario.h"
 #include "bn_sprite_items_jochem_lario.h"
 #include "bn_sprite_items_lario_lario.h"
 
 
+#include "utils.h"
 
 
 
@@ -268,3 +271,6 @@ struct Player {
         }
     }
 };
+
+
+#endif;
