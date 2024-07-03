@@ -1,6 +1,7 @@
 #include "bn_core.h"
 #include "bn_bg_palettes.h"
 #include "bn_music.h"
+#include "bn_log.h"
 
 #include "splash.h"
 
@@ -16,14 +17,16 @@ int main()
     bn::music_items::splashscreen.play();
 
     Splash::setup();
-    
+
     while(true)
     {
-        bool is_done = Splash::update();
-        if (is_done) {
+        if (!Splash::is_done) {
+            Splash::update();
+        } else {
             bn::music::stop();
+            BN_LOG("DONE!");
         }
-        
+
         bn::core::update();
     }
 }

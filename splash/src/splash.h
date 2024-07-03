@@ -4,6 +4,7 @@
 #include "bn_sprite_text_generator.h"
 #include "bn_sprite_animate_actions.h"
 #include "bn_format.h"
+#include "bn_log.h"
 
 #include "bn_sprite_items_splash_1.h"
 #include "bn_sprite_items_splash_2.h"
@@ -18,8 +19,12 @@
 
 
 
-namespace Splash {
-    
+namespace Splash 
+{
+    // important
+    bool is_done;
+
+
     // KP6 balloons: 
     // 6 sprites (64x32 pixels)
     bn::sprite_item sprite_items[] {
@@ -49,14 +54,15 @@ namespace Splash {
     bn::optional<bn::sprite_animate_action<120>> lipje_anim;
 
 
-    // text
-    bn::fixed y = 80.0;
+    // 'a softpacksix production' text
+    bn::fixed text_y = 80.0;
     bool generated = false;
     bn::sprite_text_generator text_generator(common::variable_8x8_sprite_font);
     
     bn::string<200> info_text;;
     bn::vector<bn::sprite_ptr, 64> info_text_sprites;
 
+    
 
     void setup() 
     {
@@ -88,20 +94,23 @@ namespace Splash {
             78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 93, 93, 93, 
             93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93
         );
+        lipje_anim->reset();
 
         info_text = bn::format<60>("a softpacksix production");
     }
 
     // return 'true' when animation done
-    bool update()
+    void update()
     {
+        if (is_done) return;
+
         // Update balloons
         for (auto &anim : splash_anim_actions) {
             if (anim.done()) {
                 if (!generated) {
                     text_generator.generate(0, 55, info_text, info_text_sprites);
                     generated = true;
-                    y = 80.0;
+                    text_y = 80.0;
                 }
             } else {
                 anim.update();
@@ -113,26 +122,26 @@ namespace Splash {
             lipje_anim->update();
 
             if (lipje_anim->current_index() < 20) {
-                y -= 0.5;
+                text_y -= 0.5;
             } else if (lipje_anim->current_index() > 60) {
-                y += 0.5;
+                text_y += 0.5;
             }
 
             for (int i = 0; i < info_text_sprites.size(); i++) {
-                info_text_sprites.at(i).set_y(y);
+                info_text_sprites.at(i).set_y(text_y);
             }
         }
 
         // Everything is done
-        if (lipje_anim->done() && splash_anim_actions[0].done()) {
+        if (lipje_anim->done()) {
             // Unload everything
             info_text_sprites.clear();
             splash_sprite_ptrs.clear();
             splash_anim_actions.clear();
             lipje.reset();
             lipje_anim.reset();
-            
-            return true;
+
+            is_done = true;            
         }
     }
 }
