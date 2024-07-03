@@ -13,6 +13,10 @@
 #include "bn_display.h"
 
 
+// Sounds
+#include "bn_audio.h"
+#include "bn_sound_items.h"
+
 // BGs
 #include "bn_regular_bg_items_tilemap.h"
 #include "bn_regular_bg_items_sky.h"
@@ -25,7 +29,7 @@
 #include "common_info.h"
 #include "common_variable_8x16_sprite_font.h"
 
-// Test
+// Includes
 #include "player.h"
 #include "utils.h"
 
@@ -55,11 +59,25 @@ int main()
     Player player(camera, gravity);
 
     int clouds_x = 0.0;
+    int pickup_i;
+
+    bn::sound_item pickups[] = {
+        bn::sound_items::pickup_1,
+        bn::sound_items::pickup_2,
+        bn::sound_items::pickup_3,
+        bn::sound_items::pickup_4
+    };
 
     while(true)
     {
         clouds_x -=  0.1;
         player.update(map_item);
+
+        if (bn::keypad::l_pressed()) {
+            pickups[pickup_i].play(1, 1.0, 0.0);
+            pickup_i++;
+            pickup_i = pickup_i % 4;
+        }
         
         // Moving clouds
         clouds.set_x(clouds_x + player.position.x() / bn::fixed(40.0));
