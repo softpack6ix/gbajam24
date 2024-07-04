@@ -33,6 +33,8 @@ struct CharacterAnimations {
 };
 
 
+// The union allows you to convert the keypress data
+// to a single 'int' to be able to send it over link.
 union MultiplayerKeypadData {
     struct KeypadData {
         int l_pressed : 1;
@@ -62,7 +64,6 @@ struct Player {
     bool flipped;
     bool is_landing;
     bool is_falling;
-
 
     // sprites
     bn::sprite_item sprite_item = bn::sprite_items::jochem_lario;
@@ -174,8 +175,8 @@ struct Player {
 
         // BN_LOG(bn::format<20>("tile: {}", player_tile_index));
        
-       for (size_t i = 0; i < 12; i++) {
-            if (player_tile_index == ground_tiles[i]) {
+       for (int tile_index: ground_tiles) {
+            if (player_tile_index == tile_index) {
                 on_ground = true;
             }
        }
@@ -196,7 +197,6 @@ struct Player {
                 is_falling = false;
                 is_landing = true;
             }
-
 
             velocity.set_y(bn::min(bn::fixed(0.0), velocity.y()));
         }

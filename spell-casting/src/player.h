@@ -43,7 +43,6 @@ struct Player {
     int charge_x = -90;
     int bolt_start = charge_x - 25;
 
-
     // methods
     Player(bn::camera_ptr cam, bn::fixed grav) 
     {

@@ -4,14 +4,8 @@
 #include "bn_bg_palettes.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_sprite_animate_actions.h"
-#include "bn_regular_bg_actions.h"
-#include "bn_regular_bg_builder.h"
-#include "bn_regular_bg_attributes.h"
 #include "bn_regular_bg_map_cell_info.h"
-#include "bn_sprite_text_generator.h"
 #include "bn_regular_bg_animate_actions.h"
-#include "bn_regular_bg_position_hbe_ptr.h"
-#include "bn_regular_bg_attributes_hbe_ptr.h"
 #include "bn_point.h"
 #include "bn_log.h"
 #include "bn_format.h"
@@ -144,9 +138,6 @@ int main()
 
         // Move clouds/mountains bg parallax
         sky.set_position(-player.position / bn::fixed(50.0));
-
-
-
 
 
         // Multiplayer

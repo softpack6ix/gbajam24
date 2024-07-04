@@ -98,6 +98,9 @@ int main()
 
     MultiplayerKeypadData last_keypad_data_to_send;
 
+    
+    // Map info
+    MapInfoPrinter map_info_printer(common::variable_8x16_sprite_font);
 
     while(true)
     {
@@ -114,6 +117,9 @@ int main()
 
         // Always update own player
         player.update(map_item, keypad_data_to_send.keypad_data);
+
+        map_info_printer.print_map_tiles_at_position(map_item, player.position);
+
 
         // Send if changed
         if (last_keypad_data_to_send.data != keypad_data_to_send.data) {

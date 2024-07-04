@@ -8,7 +8,10 @@
 #include "bn_math.h"
 #include "bn_regular_bg_map_item.h"
 #include "bn_regular_bg_map_cell_info.h"
+#include "bn_sprite_text_generator.h"
 
+#include "../../common/include/common_info.h"
+#include "../../common/include/common_variable_8x16_sprite_font.h"
 
 
 /**
@@ -80,3 +83,27 @@ int get_map_tile_index_at_position(bn::fixed_point pos, bn::regular_bg_map_item 
 
     return  tile_index;
 }
+
+
+class MapInfoPrinter 
+{
+    bn::optional<bn::sprite_text_generator> text_generator;
+    bn::vector<bn::sprite_ptr, 64> info_text_sprites;
+
+    public: 
+    
+    MapInfoPrinter(bn::sprite_font font) {
+        text_generator = bn::sprite_text_generator(font);
+        text_generator->set_center_alignment();
+    }
+
+    void print_map_tiles_at_position(bn::regular_bg_map_item map_item, bn::fixed_point position) {
+        int tile_left = get_map_tile_index_at_position(position + bn::fixed_point(-8,0), map_item);
+        int tile_center = get_map_tile_index_at_position(position, map_item);
+        int tile_right = get_map_tile_index_at_position(position + bn::fixed_point(8,0), map_item);
+
+        bn::string<200> info_text =  bn::format<60>("{} | {} | {}", tile_left, tile_center, tile_right);
+        info_text_sprites.clear();
+        text_generator->generate(0, 65, info_text, info_text_sprites);
+    }
+};
