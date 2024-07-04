@@ -1,5 +1,4 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#pragma once
 
 #include "bn_core.h"
 #include "bn_point.h"
@@ -7,7 +6,6 @@
 #include "bn_sprite_animate_actions.h"
 #include "bn_keypad.h"
 #include "bn_regular_bg_map_item.h"
-#include "bn_sprite_items_jochem.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_sprite_animate_actions.h"
 #include "bn_regular_bg_builder.h"
@@ -21,7 +19,7 @@
 #include "bn_sprite_items_lario_lario.h"
 
 
-#include "utils.h"
+#include "../include/utils.h"
 
 
 
@@ -271,6 +269,3 @@ struct Player {
         }
     }
 };
-
-
-#endif;

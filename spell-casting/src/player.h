@@ -1,3 +1,5 @@
+#pragma once
+
 #include "bn_core.h"
 #include "bn_point.h"
 #include "bn_fixed_point.h"
@@ -7,7 +9,7 @@
 #include "bn_sprite_items_jochem.h"
 #include "bn_sprite_items_dust_sliding.h"
 
-#include "utils.h"
+#include "../include/utils.h"
 
 
 

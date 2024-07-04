@@ -1,5 +1,4 @@
-#ifndef SPLASH_H
-#define SPLASH_H
+#pragma once
 
 #include "bn_sprite_text_generator.h"
 #include "bn_sprite_animate_actions.h"
@@ -145,8 +144,3 @@ namespace Splash
         }
     }
 }
-
-
-
-
-#endif

@@ -31,8 +31,8 @@
 #include "common_variable_8x16_sprite_font.h"
 
 // Includes
+#include "../include/utils.h"
 #include "player.h"
-#include "utils.h"
 #include "pickups.h"
 
 

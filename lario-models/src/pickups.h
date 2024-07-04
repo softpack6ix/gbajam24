@@ -1,6 +1,4 @@
-#ifndef PICKUPS_H
-#define PICKUPS_H
-
+#pragma once
 
 #include "bn_sound_items.h"
 #include "bn_optional.h"
@@ -60,5 +58,3 @@ namespace Pickups {
     };
 }
 
-
-#endif
