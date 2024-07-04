@@ -118,7 +118,8 @@ int main()
         // Always update own player
         player.update(map_item, keypad_data_to_send.keypad_data);
 
-        map_info_printer.print_map_tiles_at_position(map_item, player.position);
+        // map_info_printer.print_map_tiles_at_position(map_item, player.position);
+        map_info_printer.print_map_tile_and_position(map_item, player.position);
 
 
         // Send if changed

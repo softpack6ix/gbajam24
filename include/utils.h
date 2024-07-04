@@ -91,7 +91,7 @@ class MapInfoPrinter
     bn::vector<bn::sprite_ptr, 64> info_text_sprites;
 
     public: 
-    
+
     MapInfoPrinter(bn::sprite_font font) {
         text_generator = bn::sprite_text_generator(font);
         text_generator->set_center_alignment();
@@ -103,6 +103,14 @@ class MapInfoPrinter
         int tile_right = get_map_tile_index_at_position(position + bn::fixed_point(8,0), map_item);
 
         bn::string<200> info_text =  bn::format<60>("{} | {} | {}", tile_left, tile_center, tile_right);
+        info_text_sprites.clear();
+        text_generator->generate(0, 65, info_text, info_text_sprites);
+    }
+
+    void print_map_tile_and_position(bn::regular_bg_map_item map_item, bn::fixed_point position) {
+        int tile_center = get_map_tile_index_at_position(position, map_item);
+
+        bn::string<200> info_text =  bn::format<60>("({}, {}): {}", position.x(), position.y(), tile_center);
         info_text_sprites.clear();
         text_generator->generate(0, 65, info_text, info_text_sprites);
     }
