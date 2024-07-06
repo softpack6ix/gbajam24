@@ -72,17 +72,17 @@ int main()
     int clouds_x = 0.0;
 
 
-    const int x_offset = 10;
+    const int x_offset = 120;
     const int y_offset = 126;
 
     bn::vector<Pickups::Lipje, 20> pickups;
 
 
 
-    // pickups.push_back(Pickups::Lipje(0+x_offset,-y_offset/2, camera));
-    // pickups.push_back(Pickups::Lipje(32+x_offset,-y_offset/2, camera));
-    // pickups.push_back(Pickups::Lipje(64+x_offset,-y_offset/2, camera));
-    // pickups.push_back(Pickups::Lipje(96+x_offset,-y_offset/2, camera));
+    pickups.push_back(Pickups::Lipje(0+x_offset,-y_offset/2, camera));
+    pickups.push_back(Pickups::Lipje(32+x_offset,-y_offset/2, camera));
+    pickups.push_back(Pickups::Lipje(64+x_offset,-y_offset/2, camera));
+    pickups.push_back(Pickups::Lipje(96+x_offset,-y_offset/2, camera));
 
     pickups.push_back(Pickups::Lipje(32+x_offset,y_offset, camera));
     pickups.push_back(Pickups::Lipje(64+x_offset,y_offset, camera));
@@ -106,36 +106,11 @@ int main()
     MapInfoPrinter map_info_printer(common::variable_8x16_sprite_font);
 
 
-    // twinkle sprite test
-    // auto twinkle_sprite = bn::sprite_items::twinkle.create_sprite(bn::fixed_point(0, 0));
-    // auto anim_twinkle = bn::create_sprite_animate_action_forever(twinkle_sprite, 1, bn::sprite_items::twinkle.tiles_item(), 
-    //     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
-    //     21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
-    //     41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58
-    // );
-    
-    // auto lipje_sprite = bn::sprite_items::lipje_item.create_sprite(bn::fixed_point(0, 0));
-    // auto anim = bn::create_sprite_animate_action_forever(lipje_sprite, 1, bn::sprite_items::lipje_item.tiles_item(), 
-    //     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
-    //     21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
-    //     41, 42, 43, 44, 45, 46, 47, 48, 49, 50
-    // );
-
-    // lipje_sprite.set_camera(camera);
-    // twinkle_sprite.set_camera(camera);
-
-    TestLipje test_pickup = TestLipje(10,10,camera);
-
     while(true)
     {
-        test_pickup.update();
-        // anim.update();
-        // anim_twinkle.update();
-
         // Lipje pickup items
-        for (Pickups::Lipje l : pickups) {
-            l.update();
-            BN_LOG(l.animation.current_index( ));
+        for (Pickups::Lipje &l : pickups) {
+            l.update(players);
         }
 
         // Update player, send keypad to other players
