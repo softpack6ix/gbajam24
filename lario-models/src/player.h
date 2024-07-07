@@ -33,20 +33,25 @@ struct character_animations {
 };
 
 
-// The union allows you to convert the keypress data
-// to a single 'int' to be able to send it over link.
-union multiplayer_keypad_data {
-    struct keypad_data_struct {
-        int l_pressed : 1;
-        int r_pressed : 1;
-        int a_pressed : 1;
+namespace multiplayer 
+{
+    // The union allows you to convert the keypress data
+    // to a single 'int' to be able to send it over link.
+    union keypad_data {
+        struct keypad_data_struct {
+            int l_pressed : 1;
+            int r_pressed : 1;
+            int a_pressed : 1;
 
-        int left_held : 1;
-        int right_held : 1;
-    } keypad_data;
-    
-    int data;
-};
+            int left_held : 1;
+            int right_held : 1;
+        } keypad_data;
+        
+        int data;
+    };
+}
+
+
 
 
 
@@ -153,7 +158,7 @@ struct player {
 
 
 
-    void update(bn::regular_bg_map_item map_item, multiplayer_keypad_data::keypad_data_struct keypad_data) 
+    void update(bn::regular_bg_map_item map_item, multiplayer::keypad_data::keypad_data_struct keypad_data) 
     {
         // character switching 
         if (keypad_data.l_pressed) {

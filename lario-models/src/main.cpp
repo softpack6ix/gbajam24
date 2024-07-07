@@ -75,7 +75,7 @@ int main()
     // Multiplayer
     int players_counter;
     int current_player_id;
-    multiplayer_keypad_data last_keypad_data_to_send;
+    multiplayer::keypad_data last_keypad_data_to_send;
 
     // Map info
     info_printer printer(common::variable_8x16_sprite_font);
@@ -87,8 +87,8 @@ int main()
         level.update();   
 
         // Update player, send keypad to other players
-        multiplayer_keypad_data keypad_data_to_send {
-            keypad_data: multiplayer_keypad_data::keypad_data_struct {
+        multiplayer::keypad_data keypad_data_to_send {
+            keypad_data: multiplayer::keypad_data::keypad_data_struct {
                 l_pressed: bn::keypad::l_pressed(),
                 r_pressed: bn::keypad::r_pressed(),
                 a_pressed: bn::keypad::a_pressed(),
@@ -116,7 +116,7 @@ int main()
 
 
         // Update other player, receive keypad from other players
-        multiplayer_keypad_data other_player_keypad_data;
+        multiplayer::keypad_data other_player_keypad_data;
 
         if(bn::optional<bn::link_state> link_state = bn::link::receive())
         {
