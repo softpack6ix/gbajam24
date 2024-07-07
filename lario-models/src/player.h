@@ -175,15 +175,15 @@ struct Player {
 
         // BN_LOG(bn::format<20>("tile: {}", player_tile_index));
        
-       for (int tile_index: ground_tiles) {
-            if (player_tile_index == tile_index) {
-                on_ground = true;
-            }
-       }
+    //    for (int tile_index: ground_tiles) {
+    //         if (player_tile_index == tile_index) {
+    //             on_ground = true;
+    //         }
+    //    }
 
-        // if (player_tile_index != 0) {
-        //     on_ground = true;
-        // }
+        if (player_tile_index != 0) {
+            on_ground = true;
+        }
        
 
         // platform beneath player 

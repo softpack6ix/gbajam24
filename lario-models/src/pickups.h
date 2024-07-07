@@ -1,5 +1,5 @@
-#ifndef PICKUPS_H
-#define PICKUPS_H
+#pragma once
+
 
 #include "bn_core.h"
 #include "bn_math.h"
@@ -7,15 +7,9 @@
 #include "bn_bg_palettes.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_sprite_animate_actions.h"
-#include "bn_regular_bg_map_cell_info.h"
-#include "bn_sprite_text_generator.h"
-#include "bn_point.h"
-#include "bn_log.h"
-#include "bn_format.h"
-#include "bn_math.h"
-#include "bn_display.h"
-#include "bn_link.h"
-#include "bn_link_state.h"
+#include "bn_sound_items.h"
+#include "bn_optional.h"
+#include "bn_camera_ptr.h"
 
 
 #include "bn_sprite_items_lipje_item.h"
@@ -28,7 +22,8 @@
 
 
 
-namespace Pickups {
+namespace Pickups 
+{
     bn::sound_item pickup_sounds[4] = {
         bn::sound_items::pickup_1,
         bn::sound_items::pickup_2,
@@ -41,6 +36,13 @@ namespace Pickups {
 
     struct Lipje 
     {
+        // variables
+        const int respawn_after = 60 * 10;
+        int respawn_t = 0;
+        bool is_respawning;
+        bn::fixed_point original_position;
+
+        // graphics
         bn::sprite_ptr twinkle_spr = bn::sprite_items::twinkle.create_sprite(bn::fixed_point(0, 0));
         bn::sprite_animate_action<60> twinkle_anim = bn::create_sprite_animate_action_forever(twinkle_spr, 1, bn::sprite_items::twinkle.tiles_item(), 
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
@@ -56,9 +58,10 @@ namespace Pickups {
         );
         
         Lipje(bn::fixed x, bn::fixed y, bn::camera_ptr camera) {
-            spr.set_position(x, y);
-            twinkle_spr.set_position(x, y);
+            original_position = bn::fixed_point(x, y);
 
+            spr.set_position(original_position);
+            twinkle_spr.set_position(original_position);
             spr.set_camera(camera);
             twinkle_spr.set_camera(camera);
         }
@@ -83,14 +86,29 @@ namespace Pickups {
                 if (dist < 8 && spr.visible()) {
                     spr.set_visible(false);
                     twinkle_spr.set_visible(false);
+                    is_respawning = true;
                     pickup_sounds[pickup_i].play(1, 1.0, 0.0);
                     pickup_i++;
                     pickup_i = pickup_i % 4;
+                }
+            }
+
+            // Respawn logic
+            if (is_respawning) {
+                respawn_t++;
+
+                if (respawn_t >= respawn_after) {
+                    respawn_t = 0;
+                    is_respawning = false;
+                    spr.set_scale(1);
+                    spr.set_visible(true);
+                    twinkle_spr.set_scale(1);
+                    twinkle_spr.set_visible(true);
+                    spr.set_position(original_position);
+                    twinkle_spr.set_position(original_position);
                 }
             }
         }
     };
 
 }
-
-#endif
