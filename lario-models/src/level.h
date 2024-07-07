@@ -28,7 +28,7 @@ namespace levels
         bn::regular_bg_item tilemap_item = bn::regular_bg_items::tilemap;
         bn::fixed_point tilemap_position = bn::fixed_point(bn::display::width() / 2, bn::display::height() / 2);
 
-        virtual void update(player players[]);
+        virtual void update(bn::vector<player, 4> players);
     };
 
 
@@ -65,7 +65,7 @@ namespace levels
             // clouds.set_camera(camera);
         }
 
-        void update(player players[])
+        void update(bn::vector<player, 4> players)
         {
             // Lipje pickup items
             for (pickups::lipje &l : pickups) {
@@ -78,8 +78,8 @@ namespace levels
             // clouds.set_x(clouds_x + player.position.x() / bn::fixed(40.0));
 
 
-        // Move clouds/mountains bg parallax
-        // sky.set_position(-player.position / bn::fixed(50.0));
+            // Move clouds/mountains bg parallax
+            // sky.set_position(-player.position / bn::fixed(50.0));
         }
     };
 
@@ -95,7 +95,7 @@ namespace levels
            
         }
 
-        void update(player players[])
+        void update(bn::vector<player, 4> players)
         {
 
         }

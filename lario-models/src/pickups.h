@@ -75,7 +75,7 @@ namespace pickups
             twinkle_spr.set_camera(*camera);
         }
 
-        void update(player players[]) {
+        void update(bn::vector<player, 4> players) {
             anim.update();
             twinkle_anim.update();
 

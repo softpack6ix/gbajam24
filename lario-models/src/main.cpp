@@ -67,26 +67,19 @@ int main()
     player you(*camera, gravity);
     player other_player(*camera, gravity);
 
-
-    player players[] = {
-        you, other_player
-    };
-
+    bn::vector<player, 4> players;
+    players.push_back(you);
+    players.push_back(other_player);
+    
 
 
     // Multiplayer
     int players_counter;
     int current_player_id;
-    bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
-    bn::vector<bn::sprite_ptr, 64> info_text_sprites;
-    text_generator.set_center_alignment();
-
-
     multiplayer_keypad_data last_keypad_data_to_send;
 
-    
     // Map info
-    MapInfoPrinter map_info_printer(common::variable_8x16_sprite_font);
+    info_printer printer(common::variable_8x16_sprite_font);
 
 
     while(true)
@@ -106,10 +99,14 @@ int main()
         };
 
         // Always update own player
-        you.update(map_item, keypad_data_to_send.keypad_data);
+        you.update(map_item , keypad_data_to_send.keypad_data);
 
-        // map_info_printer.print_map_tiles_at_position(map_item, player.position);
-        map_info_printer.print_map_tile_and_position(map_item, you.position);
+
+        // Print map info when singleplayer
+        if (players_counter == 0) {
+            // map_info_printer.print_map_tiles_at_position(map_item, player.position);
+            printer.print_map_tile_and_position(map_item, you.position);
+        }
 
 
         // Send if changed
@@ -127,7 +124,6 @@ int main()
             const bn::link_player& first_other_player = link_state->other_players().front();
             other_player_keypad_data.data = first_other_player.data();
 
-
             BN_LOG(bn::format<60>("received: {}", other_player_keypad_data.data));                
 
             // Update multiplayer info text
@@ -139,11 +135,11 @@ int main()
                 bn::link::send(keypad_data_to_send.data);   
                 BN_LOG(bn::format<60>("change in link"));                
                 bn::string<60> info_text = bn::format<60>("players: {}, player id: {}", players_counter, current_player_id);
-                info_text_sprites.clear();
-                text_generator.generate(0, 65, info_text, info_text_sprites);
+                printer.print(info_text);
             }
         }
-
+        
+        // always update for animations
         other_player.update(map_item, other_player_keypad_data.keypad_data);
 
 
