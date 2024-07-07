@@ -15,14 +15,17 @@
 #include "bn_sprite_items_lipje_item.h"
 #include "bn_sprite_items_twinkle.h"
 
+
+// includes
 #include "player.h"
+#include "camera.h"
 
 
 
 
 
 
-namespace Pickups 
+namespace pickups 
 {
     bn::sound_item pickup_sounds[4] = {
         bn::sound_items::pickup_1,
@@ -31,10 +34,16 @@ namespace Pickups
         bn::sound_items::pickup_4
     };
 
-    int pickup_i; 
+    int pickup_i;
 
 
-    struct Lipje 
+    struct pickup 
+    {
+        virtual void update();
+    };
+
+
+    struct lipje
     {
         // variables
         const int respawn_after = 60 * 10;
@@ -57,16 +66,16 @@ namespace Pickups
             41, 42, 43, 44, 45, 46, 47, 48, 49, 50
         );
         
-        Lipje(bn::fixed x, bn::fixed y, bn::camera_ptr camera) {
+        lipje(bn::fixed x, bn::fixed y) {
             original_position = bn::fixed_point(x, y);
 
             spr.set_position(original_position);
             twinkle_spr.set_position(original_position);
-            spr.set_camera(camera);
-            twinkle_spr.set_camera(camera);
+            spr.set_camera(*camera);
+            twinkle_spr.set_camera(*camera);
         }
 
-        void update(Player players[]) {
+        void update(player players[]) {
             anim.update();
             twinkle_anim.update();
 

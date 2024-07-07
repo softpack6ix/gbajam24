@@ -23,7 +23,7 @@
 
 
 
-struct CharacterAnimations {
+struct character_animations {
     bn::sprite_animate_action<50> idle;
     bn::sprite_animate_action<40> run;
 
@@ -35,8 +35,8 @@ struct CharacterAnimations {
 
 // The union allows you to convert the keypress data
 // to a single 'int' to be able to send it over link.
-union MultiplayerKeypadData {
-    struct KeypadData {
+union multiplayer_keypad_data {
+    struct keypad_data_struct {
         int l_pressed : 1;
         int r_pressed : 1;
         int a_pressed : 1;
@@ -50,7 +50,7 @@ union MultiplayerKeypadData {
 
 
 
-struct Player {
+struct player {
 
     // fields
     bn::fixed_point position;
@@ -76,8 +76,8 @@ struct Player {
 
     int current_character = Rein;
 
-    CharacterAnimations character_animations[3] = {
-        CharacterAnimations {
+    character_animations character_anims[3] = {
+        character_animations {
             idle: bn::create_sprite_animate_action_forever(sprite_ptr, 1, bn::sprite_items::rein_lario.tiles_item(), 
                 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37
             ),
@@ -95,7 +95,7 @@ struct Player {
             )
         },
 
-        CharacterAnimations {
+        character_animations {
             idle: bn::create_sprite_animate_action_forever(sprite_ptr, 1, bn::sprite_items::jochem_lario.tiles_item(), 
                 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
                 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
@@ -115,7 +115,7 @@ struct Player {
             )
         },
 
-        CharacterAnimations {
+        character_animations {
             idle: bn::create_sprite_animate_action_forever(sprite_ptr, 1, bn::sprite_items::lario_lario.tiles_item(), 
                 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
                 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
@@ -138,7 +138,7 @@ struct Player {
 
 
     // methods
-    Player(bn::camera_ptr cam, bn::fixed grav) 
+    player(bn::camera_ptr cam, bn::fixed grav) 
     {
         position = bn::fixed_point(0,0);
         velocity = bn::fixed_point(0,0);
@@ -149,11 +149,11 @@ struct Player {
     }
 
 
-    ~Player() {}
+    ~player() {}
 
 
 
-    void update(bn::regular_bg_map_item map_item, MultiplayerKeypadData::KeypadData keypad_data) 
+    void update(bn::regular_bg_map_item map_item, multiplayer_keypad_data::keypad_data_struct keypad_data) 
     {
         // character switching 
         if (keypad_data.l_pressed) {
@@ -211,8 +211,8 @@ struct Player {
             is_jumping = true;
             is_landing = false;
             velocity.set_y(jump_velocity);
-            character_animations[current_character].jump_down.reset();
-            character_animations[current_character].jump_up.reset();
+            character_anims[current_character].jump_down.reset();
+            character_anims[current_character].jump_up.reset();
         }
         // running
         if (keypad_data.left_held) {
@@ -250,22 +250,22 @@ struct Player {
 
         // Update the right animation
         if (is_falling && !is_jumping && !is_landing) {
-            character_animations[current_character].jump_stay.update();
+            character_anims[current_character].jump_stay.update();
         }
         else if (is_running && !is_jumping) {
-            character_animations[current_character].run.update();
+            character_anims[current_character].run.update();
         }
         else if (is_jumping) {
-            if (character_animations[current_character].jump_up.done()) {
-                character_animations[current_character].jump_stay.update();
+            if (character_anims[current_character].jump_up.done()) {
+                character_anims[current_character].jump_stay.update();
             } else {
-                character_animations[current_character].jump_up.update();
+                character_anims[current_character].jump_up.update();
             }
-        } else if (is_landing && !character_animations[current_character].jump_down.done()) {
-            character_animations[current_character].jump_down.update();
+        } else if (is_landing && !character_anims[current_character].jump_down.done()) {
+            character_anims[current_character].jump_down.update();
         }
         else {
-            character_animations[current_character].idle.update();
+            character_anims[current_character].idle.update();
         }
     }
 };

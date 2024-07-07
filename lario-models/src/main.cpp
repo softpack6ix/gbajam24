@@ -36,61 +36,41 @@
 #include "../include/utils.h"
 #include "player.h"
 #include "pickups.h"
+#include "level.h"
 
 
 
 int main()
 {
     bn::core::init();
-    // bn::bg_palettes::set_transparent_color(bn::color(27, 16, 23));
-    bn::bg_palettes::set_transparent_color(bn::color(28, 26, 28));
+    
+
+    // The global camera    
+    camera = bn::camera_ptr::create(0, 0);
+
+
+    levels::dreft_land level;
+    bn::bg_palettes::set_transparent_color(level.background_color);
 
 
     // World
     const bn::fixed gravity = 0.3;
 
-    // BG and map
-    // bn::regular_bg_ptr sky = bn::regular_bg_items::sky.create_bg(0, 0);
-    // bn::regular_bg_ptr clouds = bn::regular_bg_items::clouds.create_bg(0, 0);
-    bn::regular_bg_ptr tilemap = bn::regular_bg_items::soapgoreslides.create_bg(bn::display::width() / 2 + 256, bn::display::height() / 2 + 256);
-    const bn::regular_bg_map_item& map_item = bn::regular_bg_items::soapgoreslides.map_item();
 
-    // Camera    
-    bn::camera_ptr camera = bn::camera_ptr::create(0, 0);
-    tilemap.set_camera(camera);
-    // clouds.set_camera(camera);
-    
+    // BG and map
+    bn::regular_bg_ptr tilemap = level.tilemap_item.create_bg(level.tilemap_position);
+    const bn::regular_bg_map_item& map_item = level.tilemap_item.map_item();
+    tilemap.set_camera(*camera);
+
 
     // Player and other player
-    Player player(camera, gravity);
-    Player other_player(camera, gravity);
+    player you(*camera, gravity);
+    player other_player(*camera, gravity);
 
 
-    Player players[] = {
-        player, other_player
+    player players[] = {
+        you, other_player
     };
-
-
-    // Lipje pickup sounds
-    int clouds_x = 0.0;
-
-
-    const int x_offset = 120;
-    const int y_offset = 126;
-
-    bn::vector<Pickups::Lipje, 20> pickups;
-
-
-
-    pickups.push_back(Pickups::Lipje(0+x_offset,-y_offset/2, camera));
-    pickups.push_back(Pickups::Lipje(32+x_offset,-y_offset/2, camera));
-    pickups.push_back(Pickups::Lipje(64+x_offset,-y_offset/2, camera));
-    pickups.push_back(Pickups::Lipje(96+x_offset,-y_offset/2, camera));
-
-    pickups.push_back(Pickups::Lipje(32+x_offset,y_offset, camera));
-    pickups.push_back(Pickups::Lipje(64+x_offset,y_offset, camera));
-    pickups.push_back(Pickups::Lipje(96+x_offset,y_offset, camera));
-
 
 
 
@@ -102,7 +82,7 @@ int main()
     text_generator.set_center_alignment();
 
 
-    MultiplayerKeypadData last_keypad_data_to_send;
+    multiplayer_keypad_data last_keypad_data_to_send;
 
     
     // Map info
@@ -111,14 +91,12 @@ int main()
 
     while(true)
     {
-        // Lipje pickup items
-        for (Pickups::Lipje &l : pickups) {
-            l.update(players);
-        }
+        // Update level
+        level.update(players);   
 
         // Update player, send keypad to other players
-        MultiplayerKeypadData keypad_data_to_send {
-            keypad_data: MultiplayerKeypadData::KeypadData {
+        multiplayer_keypad_data keypad_data_to_send {
+            keypad_data: multiplayer_keypad_data::keypad_data_struct {
                 l_pressed: bn::keypad::l_pressed(),
                 r_pressed: bn::keypad::r_pressed(),
                 a_pressed: bn::keypad::a_pressed(),
@@ -128,10 +106,10 @@ int main()
         };
 
         // Always update own player
-        player.update(map_item, keypad_data_to_send.keypad_data);
+        you.update(map_item, keypad_data_to_send.keypad_data);
 
         // map_info_printer.print_map_tiles_at_position(map_item, player.position);
-        // map_info_printer.print_map_tile_and_position(map_item, player.position);
+        map_info_printer.print_map_tile_and_position(map_item, you.position);
 
 
         // Send if changed
@@ -142,7 +120,7 @@ int main()
 
 
         // Update other player, receive keypad from other players
-        MultiplayerKeypadData other_player_keypad_data;
+        multiplayer_keypad_data other_player_keypad_data;
 
         if(bn::optional<bn::link_state> link_state = bn::link::receive())
         {
@@ -169,17 +147,8 @@ int main()
         other_player.update(map_item, other_player_keypad_data.keypad_data);
 
 
-   
-        
-        // Moving clouds
-        clouds_x -=  0.1;
-        // clouds.set_x(clouds_x + player.position.x() / bn::fixed(40.0));
-
         // Smooth cam
-        camera_follow_smooth(camera, player.sprite_ptr.position());
-
-        // Move clouds/mountains bg parallax
-        // sky.set_position(-player.position / bn::fixed(50.0));
+        camera_follow_smooth(*camera, you.sprite_ptr.position());
 
         bn::core::update();
     }
