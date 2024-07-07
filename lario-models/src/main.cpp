@@ -27,7 +27,6 @@
 // Sprites
 #include "bn_sprite_items_twinkle.h"
 
-
 // Font
 #include "common_info.h"
 #include "common_variable_8x16_sprite_font.h"
@@ -49,7 +48,8 @@ int main()
     camera = bn::camera_ptr::create(0, 0);
 
 
-    levels::dreft_land level;
+    // The current
+    levels::default_level level;
     bn::bg_palettes::set_transparent_color(level.background_color);
 
 
@@ -67,7 +67,6 @@ int main()
     player you(*camera, gravity);
     player other_player(*camera, gravity);
 
-    bn::vector<player, 4> players;
     players.push_back(you);
     players.push_back(other_player);
     
@@ -85,7 +84,7 @@ int main()
     while(true)
     {
         // Update level
-        level.update(players);   
+        level.update();   
 
         // Update player, send keypad to other players
         multiplayer_keypad_data keypad_data_to_send {

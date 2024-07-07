@@ -13,6 +13,7 @@
 #include "pickups.h"
 #include "camera.h"
 
+
 // backgrounds
 #include "bn_regular_bg_items_tilemap.h"
 #include "bn_regular_bg_items_soapgoreslides.h"
@@ -28,7 +29,7 @@ namespace levels
         bn::regular_bg_item tilemap_item = bn::regular_bg_items::tilemap;
         bn::fixed_point tilemap_position = bn::fixed_point(bn::display::width() / 2, bn::display::height() / 2);
 
-        virtual void update(bn::vector<player, 4> players);
+        virtual void update();
     };
 
 
@@ -65,11 +66,11 @@ namespace levels
             // clouds.set_camera(camera);
         }
 
-        void update(bn::vector<player, 4> players)
+        void update()
         {
             // Lipje pickup items
             for (pickups::lipje &l : pickups) {
-                l.update(players);
+                l.update();
             }
 
 

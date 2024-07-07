@@ -39,7 +39,7 @@ namespace pickups
 
     struct pickup 
     {
-        virtual void update();
+        virtual void update(bn::vector<player, 4> players);
     };
 
 
@@ -75,17 +75,17 @@ namespace pickups
             twinkle_spr.set_camera(*camera);
         }
 
-        void update(bn::vector<player, 4> players) {
+        void update() {
             anim.update();
             twinkle_anim.update();
 
             bn::fixed magnetic_range = 64;
 
             // Update for both players
-            for (int i = 0; i < 2; i++) {
-                bn::fixed dist = distance(spr.position(), players[i].sprite_ptr.position());
+            for (player &p : players) {
+                bn::fixed dist = distance(spr.position(), p.sprite_ptr.position());
                 if (dist < magnetic_range) {
-                    bn::fixed_point new_pos = lerp(spr.position(), players[i].sprite_ptr.position(), 0.2);
+                    bn::fixed_point new_pos = lerp(spr.position(), p.sprite_ptr.position(), 0.2);
                     spr.set_position(new_pos);
                     twinkle_spr.set_position(new_pos);
                     spr.set_scale(dist / magnetic_range);
@@ -100,6 +100,8 @@ namespace pickups
                     pickup_i = pickup_i % 4;
                 }
             }
+
+
 
             // Respawn logic
             if (is_respawning) {

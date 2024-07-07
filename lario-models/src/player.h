@@ -12,6 +12,7 @@
 #include "bn_sprite_text_generator.h"
 #include "bn_regular_bg_animate_actions.h"
 #include "bn_log.h"
+#include "bn_vector.h"
 
 
 #include "bn_sprite_items_rein_lario.h"
@@ -20,7 +21,6 @@
 
 
 #include "../include/utils.h"
-
 
 
 struct character_animations {
@@ -269,3 +269,15 @@ struct player {
         }
     }
 };
+
+
+
+
+
+
+
+// Global
+bn::vector<player, 4> players;
+
+
+
