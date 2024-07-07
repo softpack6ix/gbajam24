@@ -22,6 +22,14 @@ bn::fixed lerp(bn::fixed a, bn::fixed b, bn::fixed t)
     return a + t * (b - a);
 }
 
+bn::fixed_point lerp(bn::fixed_point a, bn::fixed_point b, bn::fixed t)
+{
+    return bn::fixed_point(
+        lerp(a.x(), b.x(), t),
+        lerp(a.y(), b.y(), t)
+    );
+}
+
 int mod(int a, int b) 
 {
     return ((a % b) + b) % b;

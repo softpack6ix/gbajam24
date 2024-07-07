@@ -76,10 +76,9 @@ namespace Pickups
             for (int i = 0; i < 2; i++) {
                 bn::fixed dist = distance(spr.position(), players[i].sprite_ptr.position());
                 if (dist < magnetic_range) {
-                    bn::fixed x = lerp(spr.x(), players[i].sprite_ptr.x(), 0.2);
-                    bn::fixed y = lerp(spr.y(), players[i].sprite_ptr.y(), 0.2);
-                    spr.set_position(x, y);
-                    twinkle_spr.set_position(x, y);
+                    bn::fixed_point new_pos = lerp(spr.position(), players[i].sprite_ptr.position(), 0.2);
+                    spr.set_position(new_pos);
+                    twinkle_spr.set_position(new_pos);
                     spr.set_scale(dist / magnetic_range);
                 }
 
