@@ -35,8 +35,17 @@
 #include "../include/utils.h"
 #include "player.h"
 #include "pickups.h"
-#include "level.h"
 
+// levels
+#include "level.h"
+#include "level_default.h"
+#include "level_dreftland.h"
+#include "level_kermis.h"
+#include "level_michaelsoft.h"
+#include "level_oceangate.h"
+#include "level_reins_lab.h"
+#include "level_the_tower.h"
+#include "level_thuisbezorgd.h"
 
 
 int main()
@@ -49,7 +58,7 @@ int main()
 
 
     // The current
-    levels::default_level level;
+    levels::dreft_land level;
     bn::bg_palettes::set_transparent_color(level.background_color);
 
 
@@ -63,7 +72,7 @@ int main()
     tilemap.set_camera(*camera);
 
 
-    // Player and other player
+    // Player and other player, soon to be max. 4
     player you(*camera, gravity);
     player other_player(*camera, gravity);
 
