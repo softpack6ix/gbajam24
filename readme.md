@@ -8,6 +8,11 @@ Built using [butano](https://github.com/GValiente/butano), follow the [setup ins
 Graphics made with [Blender](https://www.blender.org/) and  [Aseprite](https://www.aseprite.org/).
 
 
+
+<img style="image-rendering: pixelated; width: 100%;" src="./cart render.gif" alt="cover for gbajam24" />
+
+
+
 ## Contributors
 **Coding**: [@goudreinette](https://github.com/goudreinette), [@pierwoudstra](https://github.com/pierwoudstra)
 
