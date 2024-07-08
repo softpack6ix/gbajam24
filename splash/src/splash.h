@@ -18,7 +18,7 @@
 
 
 
-namespace Splash 
+namespace splash 
 {
     // important
     bool is_done;
@@ -43,9 +43,9 @@ namespace Splash
         bn::point(-64, 64), bn::point(64, 64),
     };
 
-
-    bn::vector<bn::sprite_ptr, 6> splash_sprite_ptrs;
-    bn::vector<bn::sprite_animate_action<81>, 6> splash_anim_actions;
+    
+    bn::vector<bn::sprite_ptr, 8> splash_sprite_ptrs;
+    bn::vector<bn::sprite_animate_action<81>, 8> splash_anim_actions;
 
 
     // lipje
