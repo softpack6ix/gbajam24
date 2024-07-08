@@ -13,6 +13,6 @@ Graphics made with [Blender](https://www.blender.org/) and  [Aseprite](https://w
 
 **Music**: [y4k4r1](https://soundcloud.com/y4k4r1)
 
-**3D models and animations**: [lario64](https://alienheadshitkid.neocities.org/), [cyberbirdxx](https://www.instagram.com/cyberbirdxx/)
+**3D models and animations**: [Lara Adriolo](https://alienheadshitkid.neocities.org/), [cyberbirdxx](https://www.instagram.com/cyberbirdxx/)
 
 **Level design**: [dg_hoek](https://www.instagram.com/dg_hoek/)
