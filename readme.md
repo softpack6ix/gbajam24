@@ -9,8 +9,17 @@ Graphics made with [Blender](https://www.blender.org/) and  [Aseprite](https://w
 
 
 
-<img style="image-rendering: pixelated; width: 100%;" src="./cart render.gif" alt="cover for gbajam24" />
 
+## Multiplayer
+This game supports (vs and coop) multiplayer using an emulator like mGBA or Visual Boy Advance on desktop, or Pizza Boy on Android.
+
+On real GBAs you can play multiplayer via a link cable.
+
+## Cartridges
+_Physical cartridges coming soon_.
+Flashed using BennVenn's Joey Jr. V2++.
+
+<img style="image-rendering: pixelated; width: 100%;" src="./cart render.gif" alt="cover for gbajam24" />
 
 
 ## Contributors
@@ -20,4 +29,4 @@ Graphics made with [Blender](https://www.blender.org/) and  [Aseprite](https://w
 
 **3D models and animations**: [Lara Adriolo](https://alienheadshitkid.neocities.org/), [cyberbirdxx](https://www.instagram.com/cyberbirdxx/)
 
-**Level design**: [dg_hoek](https://www.instagram.com/dg_hoek/)
+**Level design**: [dg_hoek](https://www.instagram.com/dg_hoek/), [cyberbirdxx](https://www.instagram.com/cyberbirdxx/)
