@@ -11,5 +11,6 @@
 				"Tyriar.luna-paint"
 			]
 		}
-	}
+	},
+	"initializeCommand": "git submodule update --init --recursive"
 }
