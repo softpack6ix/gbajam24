@@ -9,6 +9,7 @@
 #include "bn_regular_bg_map_item.h"
 #include "bn_regular_bg_map_cell_info.h"
 #include "bn_sprite_text_generator.h"
+#include "bn_format.h"
 
 #include "../../common/include/common_info.h"
 #include "../../common/include/common_variable_8x16_sprite_font.h"

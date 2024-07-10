@@ -39,6 +39,7 @@
 // levels
 #include "level.h"
 #include "level_default.h"
+#include "level_clippy_boss.h"
 #include "level_dreftland.h"
 #include "level_kermis.h"
 #include "level_michaelsoft.h"
@@ -51,14 +52,18 @@
 int main()
 {
     bn::core::init();
-    
+
+
+    // Splash?
+
+
 
     // The global camera    
     camera = bn::camera_ptr::create(0, 0);
 
 
     // The current
-    levels::dreft_land level;
+    levels::clippy_boss level;
     bn::bg_palettes::set_transparent_color(level.background_color);
 
 
