@@ -46,7 +46,7 @@ namespace pickups
     struct lipje
     {
         // variables
-        const int respawn_after = 60 * 10;
+        const int respawn_after = 60 * 2;
         int respawn_t = 0;
         bool is_respawning;
         bn::fixed_point original_position;
@@ -81,28 +81,6 @@ namespace pickups
 
             bn::fixed magnetic_range = 64;
 
-            // Update for both players
-            for (player &p : players) {
-                bn::fixed dist = distance(spr.position(), p.sprite_ptr.position());
-                if (dist < magnetic_range) {
-                    bn::fixed_point new_pos = lerp(spr.position(), p.sprite_ptr.position(), 0.2);
-                    spr.set_position(new_pos);
-                    twinkle_spr.set_position(new_pos);
-                    spr.set_scale(dist / magnetic_range);
-                }
-
-                if (dist < 8 && spr.visible()) {
-                    spr.set_visible(false);
-                    twinkle_spr.set_visible(false);
-                    is_respawning = true;
-                    pickup_sounds[pickup_i].play(1, 1.0, 0.0);
-                    pickup_i++;
-                    pickup_i = pickup_i % 4;
-                }
-            }
-
-
-
             // Respawn logic
             if (is_respawning) {
                 respawn_t++;
@@ -110,12 +88,39 @@ namespace pickups
                 if (respawn_t >= respawn_after) {
                     respawn_t = 0;
                     is_respawning = false;
-                    spr.set_scale(1);
                     spr.set_visible(true);
-                    twinkle_spr.set_scale(1);
                     twinkle_spr.set_visible(true);
                     spr.set_position(original_position);
                     twinkle_spr.set_position(original_position);
+                }
+            } else {
+                bool close_to_a_player = false;
+
+                // Update for both players
+                for (player &p : players) {
+                    bn::fixed dist = distance(spr.position(), p.sprite_ptr.position());
+
+                    if (dist < magnetic_range) {
+                        close_to_a_player = true;
+                        bn::fixed_point new_pos = lerp(spr.position(), p.sprite_ptr.position(), 0.2);
+                        spr.set_position(new_pos);
+                        twinkle_spr.set_position(new_pos);
+                        spr.set_scale(dist / magnetic_range);
+                    }
+
+                    if (dist < 8 && spr.visible()) {
+                        spr.set_visible(false);
+                        twinkle_spr.set_visible(false);
+                        is_respawning = true;
+                        pickup_sounds[pickup_i].play(1, 1.0, 0.0);
+                        pickup_i++;
+                        pickup_i = pickup_i % 4;
+                    }
+                }
+
+                if (!close_to_a_player) {
+                    spr.set_scale(lerp(1.0, spr.vertical_scale(), 0.8));
+                    twinkle_spr.set_scale(lerp(1.0, twinkle_spr.vertical_scale(), 0.8));
                 }
             }
         }

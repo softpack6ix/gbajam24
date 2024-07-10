@@ -63,7 +63,7 @@ int main()
 
 
     // The current
-    levels::clippy_boss level;
+    levels::default_level level;
     bn::bg_palettes::set_transparent_color(level.background_color);
 
 
