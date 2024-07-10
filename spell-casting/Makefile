@@ -30,12 +30,12 @@
 #---------------------------------------------------------------------------------------------------------------------
 TARGET      	:=  $(notdir $(CURDIR))
 BUILD       	:=  build
-LIBBUTANO   	:=  ../../butano
+LIBBUTANO   	:=  ../butano/butano
 PYTHON      	:=  python
-SOURCES     	:=  src ../../common/src
-INCLUDES    	:=  include  ../../common/include ../include
+SOURCES     	:=  src ../butano/common/src
+INCLUDES    	:=  include  ../butano/common/include ../include
 DATA        	:=
-GRAPHICS    	:=  graphics ../../common/graphics
+GRAPHICS    	:=  graphics ../butano/common/graphics
 AUDIO       	:=  audio
 DMGAUDIO    	:=  dmg_audio
 ROMTITLE    	:=  ROM TITLE

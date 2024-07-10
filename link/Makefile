@@ -30,14 +30,14 @@
 #---------------------------------------------------------------------------------------------------------------------
 TARGET      	:=  $(notdir $(CURDIR))
 BUILD       	:=  build
-LIBBUTANO   	:=  ../../butano
+LIBBUTANO   	:=  ../butano/butano
 PYTHON      	:=  python
-SOURCES     	:=  src ../../common/src
-INCLUDES    	:=  include ../../common/include
+SOURCES     	:=  src ../butano/common/src
+INCLUDES    	:=  include ../butano/common/include
 DATA        	:=
-GRAPHICS    	:=  graphics ../../common/graphics
-AUDIO       	:=  audio ../../common/audio
-DMGAUDIO    	:=  dmg_audio ../../common/dmg_audio
+GRAPHICS    	:=  graphics ../butano/common/graphics
+AUDIO       	:=  audio ../butano/common/audio
+DMGAUDIO    	:=  dmg_audio ../butano/common/dmg_audio
 ROMTITLE    	:=  BUTANO LINK
 ROMCODE     	:=  SBTP
 USERFLAGS   	:=  
