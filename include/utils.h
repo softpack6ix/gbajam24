@@ -31,6 +31,15 @@ bn::fixed_point lerp(bn::fixed_point a, bn::fixed_point b, bn::fixed t)
     );
 }
 
+bn::color lerp(bn::color a, bn::color b, bn::fixed t)
+{
+    return bn::color(
+        lerp(a.red(), b.red(), t).floor_integer(),
+        lerp(a.green(), b.green(), t).floor_integer(),
+        lerp(a.blue(), b.blue(), t).floor_integer()
+    );
+}
+
 bn::fixed map(bn::fixed value, bn::fixed istart, bn::fixed istop, bn::fixed ostart, bn::fixed ostop)
 {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
@@ -51,6 +60,16 @@ bn::fixed distance(bn::fixed_point a, bn::fixed_point b)
 bn::fixed clamp(bn::fixed v, bn::fixed min, bn::fixed max)
 {
     return bn::max(bn::min(v, max), min);
+}
+
+
+
+/**
+ * Colors
+ */
+bn::color rgb255(int r, int g, int b)
+{
+    return bn::color(r / 8, g / 8, b / 8);
 }
 
 

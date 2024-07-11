@@ -55,7 +55,7 @@ struct boss_healthbar
     }
 
 
-    // 0 - 100
+    // 0 - 1
     void set_health(bn::fixed health)
     {
         bn::fixed empty_space = health * 64;
@@ -68,7 +68,7 @@ struct boss_healthbar
 int main()
 {
     bn::core::init();
-    bn::bg_palettes::set_transparent_color( bn::color(42/8, 54/8, 75/8));
+    bn::bg_palettes::set_transparent_color(bn::color(42/8, 54/8, 75/8));
 
     info_printer printer(common::variable_8x16_sprite_font);
 
@@ -84,6 +84,5 @@ int main()
         bn::core::update();
     }
 }
-
 
 
