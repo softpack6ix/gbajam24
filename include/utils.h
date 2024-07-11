@@ -31,6 +31,12 @@ bn::fixed_point lerp(bn::fixed_point a, bn::fixed_point b, bn::fixed t)
     );
 }
 
+bn::fixed map(bn::fixed value, bn::fixed istart, bn::fixed istop, bn::fixed ostart, bn::fixed ostop)
+{
+    return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+}
+
+
 int mod(int a, int b) 
 {
     return ((a % b) + b) % b;
@@ -40,6 +46,11 @@ int mod(int a, int b)
 bn::fixed distance(bn::fixed_point a, bn::fixed_point b) 
 {
     return abs(a.x() - b.x()) + abs(a.y() - b.y());
+}
+
+bn::fixed clamp(bn::fixed v, bn::fixed min, bn::fixed max)
+{
+    return bn::max(bn::min(v, max), min);
 }
 
 
