@@ -114,6 +114,27 @@ void camera_follow_smooth(bn::camera_ptr cam, bn::fixed_point position)
 
 
 /**
+ * Arrows navigation
+ */
+void move_with_dpad(bn::sprite_ptr spr, int speed)
+{
+    if (bn::keypad::left_held())
+        spr.set_x(spr.x() - speed);
+    if (bn::keypad::right_held())
+        spr.set_x(spr.x() + speed);
+    if (bn::keypad::up_held())
+        spr.set_y(spr.y() - speed);
+    if (bn::keypad::down_held())
+        spr.set_y(spr.y() + speed);
+}
+
+void move_with_dpad(bn::sprite_ptr spr)
+{
+    move_with_dpad(spr, 1);
+}
+
+
+/**
  * Map utils
  * Map (0,0) is top-left but sprite (0,0) is center-center
  */
