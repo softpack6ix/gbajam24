@@ -58,29 +58,31 @@ struct boss_healthbar
     // 0 - 1
     void set_health(bn::fixed health)
     {
-        bn::fixed empty_space = health * 64;
         healthbar_fill.set_horizontal_scale(bn::max(health, bn::fixed(0.01)));
         healthbar_fill.set_x(x + map(health, 0, 1, 16, 48));
     }
 };
 
 
+
 int main()
 {
     bn::core::init();
-    bn::bg_palettes::set_transparent_color(bn::color(42/8, 54/8, 75/8));
-
-    info_printer printer(common::variable_8x16_sprite_font);
-
+    bn::bg_palettes::set_transparent_color(rgb255(42, 54, 75));
+        
+    info_printer printer;
 
     boss_healthbar healthbar(bn::sprite_items::clippy);
-    healthbar.set_health(.5);
+    healthbar.set_health(1);
 
-    // bn::regular_bg_ptr healthbar = bn::regular_bg_items::healthbar.create_bg(0,0);
+    auto clippy1 = bn::sprite_items::clippy.create_sprite(0,0);
+    auto clippy2 = bn::sprite_items::clippy.create_sprite(40,0);
     
-
     while(true)
     {
+        move_with_dpad(clippy2);
+        printer.print(bn::format<20>("{}", sprites_touch(clippy1, clippy2)));
+
         bn::core::update();
     }
 }
