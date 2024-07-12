@@ -10,6 +10,7 @@
 #include "bn_regular_bg_map_cell_info.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_format.h"
+#include "bn_rect.h"
 
 #include "../../common/include/common_info.h"
 #include "../../common/include/common_variable_8x16_sprite_font.h"
@@ -60,6 +61,20 @@ bn::fixed distance(bn::fixed_point a, bn::fixed_point b)
 bn::fixed clamp(bn::fixed v, bn::fixed min, bn::fixed max)
 {
     return bn::max(bn::min(v, max), min);
+}
+
+
+bn::rect sprite_rect(bn::sprite_ptr spr)
+{
+    return bn::rect(spr.x().floor_integer(), spr.y().floor_integer(), spr.dimensions().width(), spr.dimensions().height());
+}
+
+
+bool sprites_touch(bn::sprite_ptr a, bn::sprite_ptr b)
+{
+    bn::rect a_rect = sprite_rect(a);
+    bn::rect b_rect = sprite_rect(b);
+    return a_rect.touches(b_rect);
 }
 
 
@@ -132,6 +147,12 @@ class info_printer
     info_printer(bn::sprite_font font) 
     {
         text_generator = bn::sprite_text_generator(font);
+        text_generator->set_center_alignment();
+    }
+
+    info_printer() 
+    {
+        text_generator = bn::sprite_text_generator(common::variable_8x16_sprite_font);
         text_generator->set_center_alignment();
     }
 
