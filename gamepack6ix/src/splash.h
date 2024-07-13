@@ -13,11 +13,6 @@
 #include "bn_sprite_items_splash_6.h"
 #include "bn_sprite_items_lipje.h"
 
-#include "common_info.h"
-#include "common_variable_8x8_sprite_font.h"
-
-
-
 
 namespace splash 
 {
@@ -43,7 +38,6 @@ namespace splash
         bn::point(-64, 0), bn::point(64, 0),
         bn::point(-64, 64), bn::point(64, 64),
     };
-
     
     bn::vector<bn::sprite_ptr, 8> splash_sprite_ptrs;
     bn::vector<bn::sprite_animate_action<81>, 8> splash_anim_actions;
@@ -57,16 +51,12 @@ namespace splash
     // 'a softpacksix production' text
     bn::fixed text_y = 80.0;
     bool generated = false;
-    bn::sprite_text_generator text_generator(common::variable_8x8_sprite_font);
-    
-    bn::string<200> info_text;
-    bn::vector<bn::sprite_ptr, 8> info_text_sprites;
 
+    // info_printer printer;
     
 
     void setup() 
     {
-        text_generator.set_center_alignment();
 
         for (size_t i = 0; i < 6; i++) {
             bn::sprite_ptr spr = sprite_items[i].create_sprite(sprite_positions[i] + balloons_offset);
@@ -96,7 +86,7 @@ namespace splash
         );
         lipje_anim->reset();
 
-        info_text = bn::format<60>("a softpacksix production");
+        // info_text = bn::format<60>("a softpacksix production");
     }
 
     // return 'true' when animation done
@@ -108,7 +98,7 @@ namespace splash
         for (auto &anim : splash_anim_actions) {
             if (anim.done()) {
                 if (!generated) {
-                    text_generator.generate(0, 55, info_text, info_text_sprites);
+                    
                     generated = true;
                     text_y = 80.0;
                 }
@@ -127,15 +117,15 @@ namespace splash
                 text_y += 0.5;
             }
 
-            for (int i = 0; i < info_text_sprites.size(); i++) {
-                info_text_sprites.at(i).set_y(text_y);
-            }
+            // for (int i = 0; i < info_text_sprites.size(); i++) {
+            //     info_text_sprites.at(i).set_y(text_y);
+            // }
         }
 
         // Everything is done
         if (lipje_anim->done()) {
             // Unload everything
-            info_text_sprites.clear();
+            // info_text_sprites.clear();
             splash_sprite_ptrs.clear();
             splash_anim_actions.clear();
             lipje.reset();

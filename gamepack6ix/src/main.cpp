@@ -16,9 +16,7 @@
 #include "bn_music.h"
 #include "bn_audio.h"
 
-// Sounds
-#include "bn_sound_items.h"
-#include "bn_music_items.h"
+
 
 // BGs
 #include "bn_regular_bg_items_tilemap.h"
@@ -38,6 +36,10 @@
 #include "player.h"
 #include "pickups.h"
 #include "splash.h"
+
+// Sounds
+#include "bn_sound_items.h"
+#include "bn_music_items.h"
 
 // levels
 #include "level.h"
@@ -71,6 +73,7 @@ int main()
     bn::music::stop();
     BN_LOG("DONE!");
 
+    bn::sound_items::pickup_1.play();
 
     // The global camera    
     camera = bn::camera_ptr::create(0, 0);
@@ -105,7 +108,7 @@ int main()
     multiplayer::keypad_data last_keypad_data_to_send;
 
     // Map info
-    info_printer printer(common::variable_8x16_sprite_font);
+    info_printer printer;
 
 
     while(true)

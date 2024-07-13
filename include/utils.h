@@ -13,7 +13,7 @@
 #include "bn_rect.h"
 
 #include "../../common/include/common_info.h"
-#include "../../common/include/common_variable_8x16_sprite_font.h"
+#include "../../common/include/common_variable_8x8_sprite_font.h"
 
 
 /**
@@ -161,7 +161,7 @@ int get_map_tile_index_at_position(bn::fixed_point pos, bn::regular_bg_map_item 
 class info_printer 
 {
     bn::optional<bn::sprite_text_generator> text_generator;
-    bn::vector<bn::sprite_ptr, 64> info_text_sprites;
+    bn::vector<bn::sprite_ptr, 10> info_text_sprites;
 
     public: 
 
@@ -173,7 +173,7 @@ class info_printer
 
     info_printer() 
     {
-        text_generator = bn::sprite_text_generator(common::variable_8x16_sprite_font);
+        text_generator = bn::sprite_text_generator(common::variable_8x8_sprite_font);
         text_generator->set_center_alignment();
     }
 
@@ -191,7 +191,7 @@ class info_printer
         print(bn::format<60>("({}, {}): {}", position.x(), position.y(), tile_center));
     }
 
-    void print(bn::string<200> str)
+    void print(bn::string<40> str)
     {
         info_text_sprites.clear();
         text_generator->generate(0, 65, str, info_text_sprites);
