@@ -3,6 +3,7 @@
 #include "bn_keypad.h"
 #include "bn_bg_palettes.h"
 #include "bn_regular_bg_ptr.h"
+#include "bn_regular_bg_item.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_sprite_animate_actions.h"
 
@@ -12,6 +13,9 @@
 #include "../include/utils.h"
 
 #include "bn_music_items.h"
+#include "bn_music.h"
+
+#include "bn_regular_bg_items_casette_bg.h"
 
 
 struct song 
@@ -46,26 +50,46 @@ int current_song = 0;
 int main()
 {
     bn::core::init();
-    bn::bg_palettes::set_transparent_color(rgb255(100,100,100));
+    // bn::bg_palettes::set_transparent_color(rgb255(100,100,100));
 
     info_printer printer;
 
 
+    auto casette_bg = bn::regular_bg_items::casette_bg.create_bg(0,0);
     songs[current_song].music_item.play();
             
 
     while(true)
     {
-        if (bn::keypad::left_pressed()) {
-            current_song--;
-        }
-        if (bn::keypad::right_pressed()) {
-            current_song++;
-        }
-
         if (bn::keypad::left_pressed() || bn::keypad::right_pressed()) {
+            bn::music::stop();
+
+            if (bn::keypad::left_pressed()) {
+                current_song--;
+            }
+            if (bn::keypad::right_pressed()) {
+                current_song++;
+            }
+
+      
+            
+            
             current_song = mod(current_song, 3);
             songs[current_song].music_item.play();
+        }
+
+        if (bn::keypad::l_held()) {
+            bn::music::set_tempo(2);
+            bn::music::set_pitch(2);
+        }
+        if (bn::keypad::r_held()) {
+            bn::music::set_tempo(2);
+            bn::music::set_pitch(2);
+        }
+
+        if (!bn::keypad::l_held() && !bn::keypad::r_held()) {
+            bn::music::set_tempo(1);
+            bn::music::set_pitch(1);
         }
 
         
