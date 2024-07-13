@@ -93,10 +93,10 @@ bn::color rgb255(int r, int g, int b)
  * Camera
  */
 bool camera_moving_to_point = false;
-int cam_follow_margin = 3;
 
 void camera_follow_smooth(bn::camera_ptr cam, bn::fixed_point position) 
 {
+    int cam_follow_margin = 3;
     if (bn::abs(cam.x() - position.x()) > bn::display::width() / cam_follow_margin || 
         bn::abs(cam.y() - position.y()) > bn::display::height() / cam_follow_margin) {
         camera_moving_to_point = true;

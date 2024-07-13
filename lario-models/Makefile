@@ -47,7 +47,7 @@ USERLDFLAGS 	:=
 USERLIBDIRS 	:=  
 USERLIBS    	:=  
 DEFAULTLIBS 	:=  
-STACKTRACE		:=	
+STACKTRACE		:=	true
 USERBUILD   	:=  
 EXTTOOL     	:=  
 
