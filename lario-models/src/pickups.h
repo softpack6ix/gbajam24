@@ -24,7 +24,6 @@
 
 
 
-
 namespace pickups 
 {
     bn::sound_item pickup_sounds[4] = {
@@ -100,6 +99,7 @@ namespace pickups
                 for (player &p : players) {
                     bn::fixed dist = distance(spr.position(), p.sprite_ptr.position());
 
+                    // Magnetic
                     if (dist < magnetic_range) {
                         close_to_a_player = true;
                         bn::fixed_point new_pos = lerp(spr.position(), p.sprite_ptr.position(), 0.2);
@@ -108,6 +108,7 @@ namespace pickups
                         spr.set_scale(dist / magnetic_range);
                     }
 
+                    // Absorb
                     if (dist < 8 && spr.visible()) {
                         spr.set_visible(false);
                         twinkle_spr.set_visible(false);
@@ -118,6 +119,7 @@ namespace pickups
                     }
                 }
 
+                // Grow back
                 if (!close_to_a_player) {
                     spr.set_scale(lerp(1.0, spr.vertical_scale(), 0.8));
                     twinkle_spr.set_scale(lerp(1.0, twinkle_spr.vertical_scale(), 0.8));

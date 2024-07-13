@@ -13,10 +13,12 @@
 #include "bn_display.h"
 #include "bn_link.h"
 #include "bn_link_state.h"
+#include "bn_music.h"
+#include "bn_audio.h"
 
 // Sounds
-#include "bn_audio.h"
 #include "bn_sound_items.h"
+#include "bn_music_items.h"
 
 // BGs
 #include "bn_regular_bg_items_tilemap.h"
@@ -35,6 +37,7 @@
 #include "../include/utils.h"
 #include "player.h"
 #include "pickups.h"
+#include "splash.h"
 
 // levels
 #include "level.h"
@@ -49,18 +52,28 @@
 #include "level_thuisbezorgd.h"
 
 
+
+
 int main()
 {
     bn::core::init();
 
 
     // Splash?
+    splash::setup();
+    bn::music_items::splashscreen.play();
+    while (!splash::is_done) 
+    {
+        splash::update();
+        bn::core::update();
+    }
 
+    bn::music::stop();
+    BN_LOG("DONE!");
 
 
     // The global camera    
     camera = bn::camera_ptr::create(0, 0);
-
 
     // The current
     levels::default_level level;
