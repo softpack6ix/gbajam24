@@ -160,14 +160,14 @@ int get_map_tile_index_at_position(bn::fixed_point pos, bn::regular_bg_map_item 
 
 class info_printer 
 {
-    bn::optional<bn::sprite_text_generator> text_generator;
-    bn::vector<bn::sprite_ptr, 10> info_text_sprites;
-
     public: 
+
+    bn::optional<bn::sprite_text_generator> text_generator;
+    bn::vector<bn::sprite_ptr, 5> info_text_sprites;
 
     info_printer(bn::sprite_font font) 
     {
-        text_generator = bn::sprite_text_generator(font);
+        text_generator = bn::sprite_text_generator(common::variable_8x8_sprite_font);
         text_generator->set_center_alignment();
     }
 
@@ -182,13 +182,13 @@ class info_printer
         int tile_left = get_map_tile_index_at_position(position + bn::fixed_point(-8,0), map_item);
         int tile_center = get_map_tile_index_at_position(position, map_item);
         int tile_right = get_map_tile_index_at_position(position + bn::fixed_point(8,0), map_item);
-        print(bn::format<60>("{} | {} | {}", tile_left, tile_center, tile_right));
+        print(bn::format<40>("{} | {} | {}", tile_left, tile_center, tile_right));
     }
 
     void print_map_tile_and_position(bn::regular_bg_map_item map_item, bn::fixed_point position) 
     {
         int tile_center = get_map_tile_index_at_position(position, map_item);
-        print(bn::format<60>("({}, {}): {}", position.x(), position.y(), tile_center));
+        print(bn::format<40>("({}, {}): {}", position.x(), position.y(), tile_center));
     }
 
     void print(bn::string<40> str)

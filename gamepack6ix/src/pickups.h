@@ -18,7 +18,7 @@
 
 // includes
 #include "player.h"
-#include "camera.h"
+#include "globals.h"
 
 
 

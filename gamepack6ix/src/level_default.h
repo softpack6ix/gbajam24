@@ -11,7 +11,7 @@
 #include "../include/utils.h"
 #include "player.h"
 #include "pickups.h"
-#include "camera.h"
+#include "globals.h"
 
 
 // backgrounds

@@ -13,6 +13,7 @@
 #include "bn_sprite_items_splash_6.h"
 #include "bn_sprite_items_lipje.h"
 
+#include "globals.h"
 
 namespace splash 
 {
@@ -22,7 +23,7 @@ namespace splash
 
     // KP6 balloons: 
     // 6 sprites (64x32 pixels)
-    bn::sprite_item sprite_items[] {
+    constexpr bn::sprite_item sprite_items[] {
         bn::sprite_items::splash_1,
         bn::sprite_items::splash_2,
         bn::sprite_items::splash_3,
@@ -52,12 +53,9 @@ namespace splash
     bn::fixed text_y = 80.0;
     bool generated = false;
 
-    // info_printer printer;
-    
 
-    void setup() 
+    void run() 
     {
-
         for (size_t i = 0; i < 6; i++) {
             bn::sprite_ptr spr = sprite_items[i].create_sprite(sprite_positions[i] + balloons_offset);
             bn::sprite_animate_action<81> splash_action = bn::create_sprite_animate_action_once(spr, 1, sprite_items[i].tiles_item(), 
@@ -84,54 +82,53 @@ namespace splash
             78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 93, 93, 93, 
             93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93
         );
+
         lipje_anim->reset();
 
-        // info_text = bn::format<60>("a softpacksix production");
-    }
 
-    // return 'true' when animation done
-    void update()
-    {
-        if (is_done) return;
 
-        // Update balloons
-        for (auto &anim : splash_anim_actions) {
-            if (anim.done()) {
-                if (!generated) {
-                    
-                    generated = true;
-                    text_y = 80.0;
+        while(!is_done) 
+        {
+            // Update balloons
+            for (auto &anim : splash_anim_actions) {
+                if (anim.done()) {
+                    if (!generated) {
+                        generated = true;
+                        printer->print("a softpacksix production");
+                        text_y = 80.0;
+                    }
+                } else {
+                    anim.update();
                 }
-            } else {
-                anim.update();
-            }
-        }
-
-        // 'KP6' balloons are done, update text and lipje
-        if (splash_anim_actions[0].done() && !lipje_anim->done()) {
-            lipje_anim->update();
-
-            if (lipje_anim->current_index() < 20) {
-                text_y -= 0.5;
-            } else if (lipje_anim->current_index() > 60) {
-                text_y += 0.5;
             }
 
-            // for (int i = 0; i < info_text_sprites.size(); i++) {
-            //     info_text_sprites.at(i).set_y(text_y);
-            // }
-        }
+            // 'KP6' balloons are done, update text and lipje
+            if (splash_anim_actions[0].done() && !lipje_anim->done()) {
+                lipje_anim->update();
 
-        // Everything is done
-        if (lipje_anim->done()) {
-            // Unload everything
-            // info_text_sprites.clear();
-            splash_sprite_ptrs.clear();
-            splash_anim_actions.clear();
-            lipje.reset();
-            lipje_anim.reset();
+                if (lipje_anim->current_index() < 20) {
+                    text_y -= 0.5;
+                } else if (lipje_anim->current_index() > 60) {
+                    text_y += 0.5;
+                }
 
-            is_done = true;            
+                for (auto &spr : printer->info_text_sprites) {
+                    spr.set_y(text_y);
+                }
+            }
+
+            // Everything is done
+            if (lipje_anim->done()) {
+                // Unload everything
+                splash_sprite_ptrs.clear();
+                splash_anim_actions.clear();
+                lipje.reset();
+                lipje_anim.reset();
+
+                is_done = true;            
+            }
+
+            bn::core::update(); 
         }
     }
 }

@@ -36,6 +36,7 @@
 #include "player.h"
 #include "pickups.h"
 #include "splash.h"
+#include "globals.h"
 
 // Sounds
 #include "bn_sound_items.h"
@@ -61,22 +62,19 @@ int main()
     bn::core::init();
 
 
-    // Splash?
-    splash::setup();
-    bn::music_items::splashscreen.play();
-    while (!splash::is_done) 
-    {
-        splash::update();
-        bn::core::update();
-    }
+    // The global camera and printer
+    camera = bn::camera_ptr::create(0, 0);
+    printer = info_printer();
 
+
+    // Splash?
+    bn::music_items::splashscreen.play();
+    splash::run();
     bn::music::stop();
     BN_LOG("DONE!");
 
     bn::sound_items::pickup_1.play();
 
-    // The global camera    
-    camera = bn::camera_ptr::create(0, 0);
 
     // The current
     levels::default_level level;
@@ -100,15 +98,12 @@ int main()
     players.push_back(you);
     players.push_back(other_player);
     
-
+    bn::fixed_point last_position;
 
     // Multiplayer
     int players_counter;
     int current_player_id;
     multiplayer::keypad_data last_keypad_data_to_send;
-
-    // Map info
-    info_printer printer;
 
 
     while(true)
@@ -134,9 +129,11 @@ int main()
         // Print map info when singleplayer
         if (players_counter == 0) {
             // map_info_printer.print_map_tiles_at_position(map_item, player.position);
-            printer.print_map_tile_and_position(map_item, you.position);
+            if (you.position != last_position) {
+                last_position = you.position;
+                printer->print_map_tile_and_position(map_item, you.position);
+            }
         }
-
 
         // Send if changed
         if (last_keypad_data_to_send.data != keypad_data_to_send.data) {
@@ -153,7 +150,7 @@ int main()
             const bn::link_player& first_other_player = link_state->other_players().front();
             other_player_keypad_data.data = first_other_player.data();
 
-            BN_LOG(bn::format<60>("received: {}", other_player_keypad_data.data));                
+            BN_LOG(bn::format<40>("received: {}", other_player_keypad_data.data));                
 
             // Update multiplayer info text
             if (players_counter != link_state->player_count()) {
@@ -162,9 +159,9 @@ int main()
 
                 // Immediately refresh the other player as well
                 bn::link::send(keypad_data_to_send.data);   
-                BN_LOG(bn::format<60>("change in link"));                
-                bn::string<60> info_text = bn::format<60>("players: {}, player id: {}", players_counter, current_player_id);
-                printer.print(info_text);
+                BN_LOG("change in link");                
+                bn::string<40> info_text = bn::format<40>("players: {}, player id: {}", players_counter, current_player_id);
+                printer->print(info_text);
             }
         }
         
