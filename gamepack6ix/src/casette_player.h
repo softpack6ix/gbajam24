@@ -9,10 +9,9 @@
 #include "bn_sprite_text_generator.h"
 #include "bn_sprite_animate_actions.h"
 
-#include "common_info.h"
-#include "common_variable_8x16_sprite_font.h"
 
 #include "../include/utils.h"
+#include "level.h"
 
 #include "bn_music_items.h"
 #include "bn_music.h"
@@ -38,21 +37,21 @@ namespace casette_player
         },
         song 
         {
-            "deadlock",
-            bn::music_items::deadlock
+            "hymn_to_aurora",
+            bn::music_items::hymn_to_aurora
         },
         song 
         {
-            "hymn_to_aurora",
-            bn::music_items::hymn_to_aurora
-        }
+            "deadlock",
+            bn::music_items::deadlock
+        },
     };
 
 
     int current_song = 0;
 
 
-    void run()
+    next_scene run()
     {
         auto casette_bg = bn::regular_bg_items::casette_bg.create_bg(0,0);
         songs[current_song].music_item.play();

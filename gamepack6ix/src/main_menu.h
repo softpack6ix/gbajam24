@@ -4,19 +4,13 @@
 #include "bn_keypad.h"
 #include "globals.h"
 
+#include "level.h"
 
 
 namespace main_menu 
 {
     // important
     bool is_done;
-
-
-    enum class next_scene
-    {
-        casette,
-        platforming
-    };
 
 
     next_scene run() 
