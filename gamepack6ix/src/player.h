@@ -23,14 +23,6 @@
 #include "../include/utils.h"
 
 
-struct character_animations {
-    bn::sprite_animate_action<50> idle;
-    bn::sprite_animate_action<40> run;
-
-    bn::sprite_animate_action<20> jump_up;
-    bn::sprite_animate_action<2> jump_stay;
-    bn::sprite_animate_action<60> jump_down;
-};
 
 
 namespace multiplayer 
@@ -52,6 +44,14 @@ namespace multiplayer
 }
 
 
+struct character_animations {
+    bn::sprite_animate_action<50> idle;
+    bn::sprite_animate_action<40> run;
+
+    bn::sprite_animate_action<20> jump_up;
+    bn::sprite_animate_action<2> jump_stay;
+    bn::sprite_animate_action<60> jump_down;
+};
 
 
 
@@ -75,11 +75,11 @@ struct player {
     bn::sprite_ptr sprite_ptr = sprite_item.create_sprite(0, 0);
 
 
-    enum Character {
-        Rein, Jochem, Lario
+    enum character {
+        rein, jochem, lario
     };
 
-    int current_character = Rein;
+    int current_character = rein;
 
     character_animations character_anims[3] = {
         character_animations {
