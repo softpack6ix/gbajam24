@@ -54,7 +54,7 @@ namespace main_menu
 
         // create sprites
         for (menu_item &item : menu_items) {
-            item.spr = item.sprite_item.create_sprite(0, y_offset + item.y_offset);
+            item.spr = item.sprite_item.create_sprite(x_offset - 64, y_offset + item.y_offset);
         }
 
         printer->print("main menu");
@@ -64,7 +64,7 @@ namespace main_menu
 
 
       
-            if (bn::keypad::up_pressed() || bn::keypad::down_pressed() || !first_update) {
+            if (bn::keypad::up_pressed() || bn::keypad::down_pressed()) {
                 if (bn::keypad::up_pressed())
                     selected_menu_item--;
                 if (bn::keypad::down_pressed())
@@ -78,8 +78,16 @@ namespace main_menu
                 menu_items[i].spr->set_x(lerp(menu_items[i].target_x + x_offset, menu_items[i].spr->x(), 0.2));
             }
 
+            if (bn::keypad::a_pressed()) {
+                for (menu_item &item : menu_items) {
+                    item.spr.reset();
+                }
 
-            printer->print(bn::format<20>("{}",selected_menu_item));
+                return menu_items[selected_menu_item].scene;
+            }
+
+
+            // printer->print(bn::format<20>("{}",selected_menu_item));
 
             // fade_action->update();
 
