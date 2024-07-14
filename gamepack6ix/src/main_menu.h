@@ -50,6 +50,8 @@ namespace main_menu
     {
         bn::bg_palettes::set_transparent_color(bn::color(0,0,0));
 
+        bn::sound_items::pause.play();
+
         int y_offset = -50;
         int x_offset = -70;
         int selected_menu_item = 0;

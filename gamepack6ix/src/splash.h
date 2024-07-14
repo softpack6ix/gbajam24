@@ -44,7 +44,7 @@ namespace splash
     };
     
     bn::vector<bn::sprite_ptr, 8> splash_sprite_ptrs;
-    bn::vector<bn::sprite_animate_action<81>, 8> splash_anim_actions;
+    bn::vector<bn::sprite_animate_action<82>, 8> splash_anim_actions;
 
 
     // lipje
@@ -55,18 +55,19 @@ namespace splash
     // 'a softpacksix production' text
     bn::fixed text_y = 80.0;
     bool generated = false;
+    bool splash_sprite_prs_removed = false;
 
     next_scene run() 
     {
         for (size_t i = 0; i < 6; i++) {
             bn::sprite_ptr spr = sprite_items[i].create_sprite(sprite_positions[i] + balloons_offset);
-            bn::sprite_animate_action<81> splash_action = bn::create_sprite_animate_action_once(spr, 1, sprite_items[i].tiles_item(), 
+            bn::sprite_animate_action<82> splash_action = bn::create_sprite_animate_action_once(spr, 1, sprite_items[i].tiles_item(), 
                 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
                 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 
                 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
                 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
                 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 
-                80
+                80, 81
             );
 
             spr.set_scale(2);
@@ -107,6 +108,10 @@ namespace splash
 
             // 'KP6' balloons are done, update text and lipje
             if (splash_anim_actions[0].done() && !lipje_anim->done()) {
+                if (!splash_sprite_prs_removed) {
+                    splash_sprite_ptrs.clear();
+                }
+
                 lipje_anim->update();
 
                 if (lipje_anim->current_index() < 20) {
