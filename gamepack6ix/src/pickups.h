@@ -20,12 +20,12 @@
 #include "player.h"
 #include "globals.h"
 
-
+#include "bn_sound_items.h"
 
 
 
 namespace pickups 
-{
+{   
     bn::sound_item pickup_sounds[4] = {
         bn::sound_items::pickup_1,
         bn::sound_items::pickup_2,
@@ -34,7 +34,8 @@ namespace pickups
     };
 
     int pickup_i;
-
+    int reset_pickup_i_t = 0;
+    int reset_pickup_i_after = 60 * 5;
 
     struct pickup 
     {
@@ -45,7 +46,7 @@ namespace pickups
     struct lipje
     {
         // variables
-        const int respawn_after = 60 * 2;
+        const int respawn_after = 60;
         int respawn_t = 0;
         bool is_respawning;
         bn::fixed_point original_position;
@@ -115,7 +116,8 @@ namespace pickups
                         is_respawning = true;
                         pickup_sounds[pickup_i].play(1, 1.0, 0.0);
                         pickup_i++;
-                        pickup_i = pickup_i % 4;
+                        // pickup_i = pickup_i % 4;
+                        reset_pickup_i_t = 0;
                     }
                 }
 
@@ -124,6 +126,13 @@ namespace pickups
                     spr.set_scale(lerp(1.0, spr.vertical_scale(), 0.8));
                     twinkle_spr.set_scale(lerp(1.0, twinkle_spr.vertical_scale(), 0.8));
                 }
+            }
+
+            // Reset sound effects index;
+            reset_pickup_i_t++;
+            if (reset_pickup_i_t > reset_pickup_i_after) {
+                pickup_i = 0;
+                reset_pickup_i_t = 0;
             }
         }
     };
