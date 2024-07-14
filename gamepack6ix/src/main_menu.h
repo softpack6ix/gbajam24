@@ -4,7 +4,7 @@
 #include "bn_keypad.h"
 #include "globals.h"
 
-#include "level.h"
+#include "scene.h"
 
 
 namespace main_menu 

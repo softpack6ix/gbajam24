@@ -11,7 +11,7 @@
 
 
 #include "../include/utils.h"
-#include "level.h"
+#include "scene.h"
 
 #include "bn_music_items.h"
 #include "bn_music.h"

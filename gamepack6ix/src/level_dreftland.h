@@ -9,17 +9,18 @@
 
 // includes
 #include "../include/utils.h"
-#include "level.h"
+#include "scene.h"
 #include "player.h"
 #include "pickups.h"
 #include "globals.h"
+#include "platforming_level.h"
 
 
 // backgrounds
 #include "bn_regular_bg_items_soapgoreslides.h"
 
 
-namespace levels 
+namespace platforming_level 
 {
     struct dreft_land : level 
     {

@@ -17,42 +17,19 @@
 #include "bn_audio.h"
 
 
-// BGs
-#include "bn_regular_bg_items_tilemap.h"
-#include "bn_regular_bg_items_sky.h"
-#include "bn_regular_bg_items_clouds.h"
-#include "bn_regular_bg_items_soapgoreslides.h"
-
-// Sprites
-
-// Font
-
 // Includes
 #include "../include/utils.h"
 #include "globals.h"
 #include "player.h"
 #include "pickups.h"
+
+
+// scenes
+#include "scene.h"
+#include "platforming_level.h"
 #include "splash.h"
 #include "main_menu.h"
 #include "casette_player.h"
-
-// Sounds
-#include "bn_sound_items.h"
-#include "bn_music_items.h"
-
-// levels
-#include "level.h"
-#include "level_default.h"
-#include "level_clippy_boss.h"
-#include "level_dreftland.h"
-#include "level_kermis.h"
-#include "level_michaelsoft.h"
-#include "level_oceangate.h"
-#include "level_reins_lab.h"
-#include "level_the_tower.h"
-#include "level_thuisbezorgd.h"
-#include "platforming_level.h"
-
 
 
 
@@ -66,7 +43,6 @@ int main()
 
     // Splash
     splash::run();
-    BN_LOG("splash done!");
 
     // Main menu
     next_scene next = main_menu::run();

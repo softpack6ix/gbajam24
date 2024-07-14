@@ -19,6 +19,13 @@
 #include "bn_audio.h"
 
 
+// BGs
+#include "bn_regular_bg_items_tilemap.h"
+#include "bn_regular_bg_items_sky.h"
+#include "bn_regular_bg_items_clouds.h"
+#include "bn_regular_bg_items_soapgoreslides.h"
+
+
 // Includes
 #include "../include/utils.h"
 #include "globals.h"
@@ -27,7 +34,7 @@
 #include "splash.h"
 #include "main_menu.h"
 
-#include "level.h"
+#include "scene.h"
 #include "level_default.h"
 
 
@@ -35,13 +42,23 @@
 
 namespace platforming_level
 {
+    struct level
+    {
+        bn::color background_color = bn::color(16, 24, 29);
+        bn::regular_bg_item tilemap_item = bn::regular_bg_items::tilemap;
+        bn::fixed_point tilemap_position = bn::fixed_point(bn::display::width() / 2, bn::display::height() / 2);
+
+        virtual void update();
+    };
+
+
     next_scene run()
     {
         // The current
-        levels::default_level level;
+        platforming_level::default_level level;
         bn::bg_palettes::set_transparent_color(level.background_color);
 
-        
+
         // World
         const bn::fixed gravity = 0.3;
 

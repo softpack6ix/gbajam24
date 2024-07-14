@@ -12,6 +12,7 @@
 #include "player.h"
 #include "pickups.h"
 #include "globals.h"
+#include "platforming_level.h"
 
 
 // backgrounds
@@ -21,10 +22,9 @@
 
 
 
-namespace levels 
+namespace platforming_level 
 {
-    struct default_level : level
-    {
+    struct default_level {
         bn::color background_color = bn::color(16, 24, 29);
         bn::regular_bg_item tilemap_item = bn::regular_bg_items::tilemap;
         bn::fixed_point tilemap_position = bn::fixed_point(bn::display::width() / 2, bn::display::height() / 2);

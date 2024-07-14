@@ -9,15 +9,16 @@
 
 // includes
 #include "../include/utils.h"
-#include "level.h"
+#include "scene.h"
 #include "player.h"
 #include "pickups.h"
 #include "globals.h"
+#include "platforming_level.h"
 
 
 
 
-namespace levels 
+namespace platforming_level 
 {
     struct michaelsoft : level
     {

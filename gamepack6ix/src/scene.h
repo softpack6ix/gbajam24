@@ -9,19 +9,14 @@
 
 // includes
 #include "../include/utils.h"
-#include "scene.h"
-#include "player.h"
-#include "pickups.h"
-#include "globals.h"
-
-#include "platforming_level.h"
 
 
 
-namespace platforming_level 
+enum class next_scene
 {
-    struct the_tower : level
-    {
+    casette,
+    platforming,
+    splash,
+    main_menu
+};
 
-    };
-}

@@ -16,13 +16,13 @@
 #include "bn_music_items.h"
 
 #include "globals.h"
-#include "level.h"
+#include "scene.h"
+
 
 namespace splash 
 {
     // important
     bool is_done;
-
 
     // KP6 balloons: 
     // 6 sprites (64x32 pixels)
@@ -89,7 +89,6 @@ namespace splash
         );
 
         lipje_anim->reset();
-
 
 
         while(!is_done) 
