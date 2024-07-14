@@ -1,3 +1,5 @@
+#pragma once
+
 #include "bn_core.h"
 #include "bn_math.h"
 #include "bn_keypad.h"
@@ -22,11 +24,11 @@ namespace casette_player
 {
     struct song 
     {
-        bn::string<20> name;
-        bn::music_item music_item;
+        const bn::string<20> name;
+        const bn::music_item music_item;
     };
 
-    song songs[] = 
+    BN_DATA_EWRAM const song songs[] = 
     {
         song 
         {
@@ -47,7 +49,6 @@ namespace casette_player
 
 
     int current_song = 0;
-    info_printer printer(common::variable_8x16_sprite_font);
 
 
     void run()
@@ -85,17 +86,8 @@ namespace casette_player
                 bn::music::set_pitch(1);
             }
             
-            printer.print(songs[current_song].name);
+            printer->print(songs[current_song].name);
             bn::core::update();
         }
     }
 };
-
-
-
-int main()
-{
-    bn::core::init();
-    // bn::bg_palettes::set_transparent_color(rgb255(100,100,100));
-    casette_player::run();
-}

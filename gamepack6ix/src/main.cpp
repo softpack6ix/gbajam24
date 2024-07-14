@@ -33,10 +33,12 @@
 
 // Includes
 #include "../include/utils.h"
+#include "globals.h"
 #include "player.h"
 #include "pickups.h"
 #include "splash.h"
-#include "globals.h"
+#include "main_menu.h"
+#include "casette_player.h"
 
 // Sounds
 #include "bn_sound_items.h"
@@ -67,13 +69,17 @@ int main()
     printer = info_printer();
 
 
-    // Splash?
+    // Splash
     bn::music_items::splashscreen.play();
     splash::run();
     bn::music::stop();
-    BN_LOG("DONE!");
+    BN_LOG("splash done!");
 
-    bn::sound_items::pickup_1.play();
+    // Main menu
+    main_menu::next_scene next = main_menu::run();
+
+    if (next == main_menu::next_scene::casette) 
+        casette_player::run();
 
 
     // The current
@@ -131,9 +137,11 @@ int main()
             // map_info_printer.print_map_tiles_at_position(map_item, player.position);
             if (you.position != last_position) {
                 last_position = you.position;
-                printer->print_map_tile_and_position(map_item, you.position);
+                // printer->print_map_tile_and_position(map_item, you.position);
             }
         }
+
+        log_memory_usage();
 
         // Send if changed
         if (last_keypad_data_to_send.data != keypad_data_to_send.data) {
