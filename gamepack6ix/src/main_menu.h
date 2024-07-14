@@ -11,6 +11,8 @@
 #include "bn_sprite_items_menu_platforming.h"
 #include "bn_sprite_palette_actions.h"
 
+#include "bn_sound_items.h"
+
 namespace main_menu 
 {
     struct menu_item
@@ -26,22 +28,22 @@ namespace main_menu
     {
         menu_item 
         {
-            next_scene::casette,
-            bn::sprite_items::menu_casette,
-            0
-        },
-        menu_item 
-        {
             next_scene::platforming,
             bn::sprite_items::menu_platforming,
-            34
+            0
         },
         menu_item 
         {
             next_scene::thuisbezorgd,
             bn::sprite_items::menu_thuisbezorgd,
-            68
+            34
         },
+        menu_item 
+        {
+            next_scene::casette,
+            bn::sprite_items::menu_casette,
+            68
+        }
     };
 
     next_scene run() 
@@ -62,9 +64,9 @@ namespace main_menu
         while (true) {
             log_memory_usage();
 
-
-      
             if (bn::keypad::up_pressed() || bn::keypad::down_pressed()) {
+                bn::sound_items::cursor.play();
+
                 if (bn::keypad::up_pressed())
                     selected_menu_item--;
                 if (bn::keypad::down_pressed())
@@ -79,6 +81,8 @@ namespace main_menu
             }
 
             if (bn::keypad::a_pressed()) {
+                bn::sound_items::into.play();
+                // bn::sound_items::shield.play();
                 for (menu_item &item : menu_items) {
                     item.spr.reset();
                 }
@@ -86,18 +90,6 @@ namespace main_menu
                 return menu_items[selected_menu_item].scene;
             }
 
-
-            // printer->print(bn::format<20>("{}",selected_menu_item));
-
-            // fade_action->update();
-
-            // if (bn::keypad::left_pressed())
-            //     return next_scene::platforming;
-            // if (bn::keypad::right_pressed())
-            //     return next_scene::casette;
-            // if (bn::keypad::up_pressed())
-            //     return next_scene::thuisbezorgd;
-            
 
             bn::core::update();
         }
