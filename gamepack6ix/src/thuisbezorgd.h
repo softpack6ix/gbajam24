@@ -39,6 +39,8 @@ namespace thuisbezorgd
         // methods
         void update() 
         {
+            log_memory_usage();
+            
             if (bn::keypad::left_held()) {
                 direction-=.01;
             }
