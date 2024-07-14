@@ -25,11 +25,8 @@
 #include "bn_regular_bg_items_soapgoreslides.h"
 
 // Sprites
-#include "bn_sprite_items_twinkle.h"
 
 // Font
-#include "common_info.h"
-#include "common_variable_8x16_sprite_font.h"
 
 // Includes
 #include "../include/utils.h"

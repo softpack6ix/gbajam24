@@ -89,6 +89,9 @@ namespace splash
 
         while(!is_done) 
         {
+            log_memory_usage();
+
+
             // Update balloons
             for (auto &anim : splash_anim_actions) {
                 if (anim.done()) {

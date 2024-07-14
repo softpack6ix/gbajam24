@@ -24,11 +24,12 @@ namespace casette_player
 {
     struct song 
     {
-        const bn::string<20> name;
+        const char name[20];
         const bn::music_item music_item;
     };
 
-    BN_DATA_EWRAM const song songs[] = 
+
+    constexpr song songs[] = 
     {
         song 
         {

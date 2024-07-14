@@ -24,6 +24,9 @@ namespace main_menu
         printer->print("main menu");
         
         while (!is_done) {
+            log_memory_usage();
+
+
             if (bn::keypad::left_pressed())
                 return next_scene::platforming;
             if (bn::keypad::right_pressed())
