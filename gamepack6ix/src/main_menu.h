@@ -27,6 +27,8 @@ namespace main_menu
                 return next_scene::platforming;
             if (bn::keypad::right_pressed())
                 return next_scene::casette;
+            if (bn::keypad::up_pressed())
+                return next_scene::thuisbezorgd;
             
 
             bn::core::update();

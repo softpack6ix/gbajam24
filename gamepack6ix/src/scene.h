@@ -14,9 +14,10 @@
 
 enum class next_scene
 {
+    splash,
+    main_menu,
     casette,
     platforming,
-    splash,
-    main_menu
+    thuisbezorgd
 };
 

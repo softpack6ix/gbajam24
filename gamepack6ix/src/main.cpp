@@ -30,6 +30,7 @@
 #include "splash.h"
 #include "main_menu.h"
 #include "casette_player.h"
+#include "thuisbezorgd.h"
 
 
 
@@ -56,5 +57,7 @@ int main()
             next = platforming_level::run();
         else if (next == next_scene::main_menu)
             next = main_menu::run();
+        else if (next == next_scene::thuisbezorgd)
+            next = thuisbezorgd::run();
     }
 }
