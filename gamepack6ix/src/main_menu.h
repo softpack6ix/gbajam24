@@ -44,9 +44,6 @@ namespace main_menu
         },
     };
 
-    bool first_update;
-
-
     next_scene run() 
     {
         bn::bg_palettes::set_transparent_color(bn::color(0,0,0));
@@ -61,9 +58,6 @@ namespace main_menu
         }
 
         printer->print("main menu");
-        
-        bn::optional<bn::sprite_palette_fade_loop_action> fade_action;
-
 
         while (true) {
             log_memory_usage();
@@ -71,25 +65,12 @@ namespace main_menu
 
       
             if (bn::keypad::up_pressed() || bn::keypad::down_pressed() || !first_update) {
-                first_update = true;
-                bn::sprite_palette_ptr p = menu_items[selected_menu_item].spr->palette();
-                // p.set_fade_intensity(0);
-
                 if (bn::keypad::up_pressed())
                     selected_menu_item--;
                 if (bn::keypad::down_pressed())
                     selected_menu_item++;
 
                 selected_menu_item = mod(selected_menu_item, 3);
-                // for (size_t i = 0; i < 3; i++) {
-                //     menu_items[i].spr->set_x(i == selected_menu_item ? 10 : 0);
-
-                //     if (i == selected_menu_item) {
-                //         menu_item mi = menu_items[i];
-                //         bn::sprite_palette_ptr pal = mi.spr->palette();
-                //         fade_action = bn::sprite_palette_fade_loop_action(pal, 30, .5);
-                //     }
-                // }
             }
 
             for (size_t i = 0; i < 3; i++) {
