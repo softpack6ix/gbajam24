@@ -13,7 +13,10 @@
 #include "bn_sprite_items_splash_6.h"
 #include "bn_sprite_items_lipje.h"
 
+#include "bn_music_items.h"
+
 #include "globals.h"
+#include "level.h"
 
 namespace splash 
 {
@@ -54,8 +57,10 @@ namespace splash
     bool generated = false;
 
 
-    void run() 
+    next_scene run() 
     {
+        bn::music_items::splashscreen.play();
+
         for (size_t i = 0; i < 6; i++) {
             bn::sprite_ptr spr = sprite_items[i].create_sprite(sprite_positions[i] + balloons_offset);
             bn::sprite_animate_action<81> splash_action = bn::create_sprite_animate_action_once(spr, 1, sprite_items[i].tiles_item(), 
@@ -128,7 +133,8 @@ namespace splash
                 lipje.reset();
                 lipje_anim.reset();
 
-                is_done = true;            
+                bn::music::stop();
+                return next_scene::main_menu;
             }
 
             bn::core::update(); 

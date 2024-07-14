@@ -88,6 +88,11 @@ namespace casette_player
             
             printer->print(songs[current_song].name);
             bn::core::update();
+
+            if (bn::keypad::start_pressed()) {
+                bn::music::stop();
+                return next_scene::main_menu;
+            }
         }
     }
 };

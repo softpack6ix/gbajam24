@@ -16,10 +16,13 @@
 // backgrounds
 #include "bn_regular_bg_items_tilemap.h"
 
+
 enum class next_scene
 {
     casette,
-    platforming
+    platforming,
+    splash,
+    main_menu
 };
 
 

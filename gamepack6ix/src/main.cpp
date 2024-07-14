@@ -65,9 +65,7 @@ int main()
     printer = info_printer();
 
     // Splash
-    bn::music_items::splashscreen.play();
     splash::run();
-    bn::music::stop();
     BN_LOG("splash done!");
 
     // Main menu
@@ -80,5 +78,7 @@ int main()
             next = casette_player::run();
         else if (next == next_scene::platforming)
             next = platforming_level::run();
+        else if (next == next_scene::main_menu)
+            next = main_menu::run();
     }
 }

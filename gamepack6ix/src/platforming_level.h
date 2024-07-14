@@ -41,7 +41,7 @@ namespace platforming_level
         levels::default_level level;
         bn::bg_palettes::set_transparent_color(level.background_color);
 
-
+        
         // World
         const bn::fixed gravity = 0.3;
 
@@ -134,6 +134,12 @@ namespace platforming_level
 
             // Smooth cam
             camera_follow_smooth(*camera, you.sprite_ptr.position());
+
+            if (bn::keypad::start_pressed()) {
+                bn::music::stop();
+                players.clear();
+                return next_scene::main_menu;
+            }
 
             bn::core::update();
         }

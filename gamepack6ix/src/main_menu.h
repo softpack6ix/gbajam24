@@ -15,6 +15,8 @@ namespace main_menu
 
     next_scene run() 
     {
+        bn::bg_palettes::set_transparent_color(bn::color(0,0,0));
+
         printer->print("main menu");
         
         while (!is_done) {
