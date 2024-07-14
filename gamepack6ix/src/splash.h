@@ -56,10 +56,12 @@ namespace splash
     bn::fixed text_y = 80.0;
     bool generated = false;
 
+    // fade
+    int fade = 255;
 
     next_scene run() 
     {
-        bn::music_items::splashscreen.play();
+        bn::bg_palettes::set_transparent_color(rgb255(fade,fade,fade));
 
         for (size_t i = 0; i < 6; i++) {
             bn::sprite_ptr spr = sprite_items[i].create_sprite(sprite_positions[i] + balloons_offset);
@@ -91,11 +93,19 @@ namespace splash
         lipje_anim->reset();
 
 
-        while(!is_done) 
+        // Do the fade
+        while (fade > 0)
         {
-            log_memory_usage();
+            fade -= 20;
+            bn::bg_palettes::set_transparent_color(rgb255(fade,fade,fade));
+            bn::core::update();
+        }
+
+        bn::music_items::splashscreen.play();
 
 
+        while(true) 
+        {
             // Update balloons
             for (auto &anim : splash_anim_actions) {
                 if (anim.done()) {
