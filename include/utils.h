@@ -10,6 +10,7 @@
 #include "bn_regular_bg_map_cell_info.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_format.h"
+#include "bn_memory.h"
 #include "bn_rect.h"
 
 #include "../../common/include/common_info.h"
@@ -157,6 +158,15 @@ int get_map_tile_index_at_position(bn::fixed_point pos, bn::regular_bg_map_item 
 
 
 
+/**
+ * Printing and logging
+ */
+void log_memory_usage()
+{
+    using namespace bn::memory;
+    BN_LOG(bn::format<40>("{}kb - {}kb - {}mb", used_static_iwram() / 1024, used_stack_iwram() / 1024, used_rom() / 1024 / 1024));
+}
+
 
 class info_printer 
 {
@@ -167,7 +177,7 @@ class info_printer
 
     info_printer(bn::sprite_font font) 
     {
-        text_generator = bn::sprite_text_generator(common::variable_8x8_sprite_font);
+        text_generator = bn::sprite_text_generator(font);
         text_generator->set_center_alignment();
     }
 
@@ -189,6 +199,11 @@ class info_printer
     {
         int tile_center = get_map_tile_index_at_position(position, map_item);
         print(bn::format<40>("({}, {}): {}", position.x(), position.y(), tile_center));
+    }
+
+    void print_mem_usage()
+    {
+        // print(bn::format<40>("{}, {}", bn::memory::used_static_iwram, bn::memory::used_stack_iwram));
     }
 
     void print(bn::string<40> str)
