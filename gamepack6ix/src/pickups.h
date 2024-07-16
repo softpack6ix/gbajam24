@@ -46,7 +46,7 @@ namespace pickups
     struct lipje
     {
         // variables
-        const int respawn_after = 60;
+        const int respawn_after = 60 * 3;
         int respawn_t = 0;
         bool is_respawning;
         bn::fixed_point original_position;
@@ -110,7 +110,7 @@ namespace pickups
                     }
 
                     // Absorb
-                    if (dist < 8 && spr.visible()) {
+                    if (dist < 16 && spr.visible()) {
                         spr.set_visible(false);
                         twinkle_spr.set_visible(false);
                         is_respawning = true;

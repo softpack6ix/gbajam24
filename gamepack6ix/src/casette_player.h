@@ -32,6 +32,16 @@ namespace casette_player
     {
         song 
         {
+            "beepom1",
+            bn::music_items::beepom1
+        },
+        song 
+        {
+            "breakagez",
+            bn::music_items::breakagez
+        },
+        song 
+        {
             "space debris",
             bn::music_items::space_debris
         },
@@ -39,11 +49,6 @@ namespace casette_player
         {
             "hymn_to_aurora",
             bn::music_items::hymn_to_aurora
-        },
-        song 
-        {
-            "deadlock",
-            bn::music_items::deadlock
         },
     };
 
