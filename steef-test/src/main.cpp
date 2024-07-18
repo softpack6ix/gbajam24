@@ -16,16 +16,26 @@
 #include "bn_camera_ptr.h"
 #include "bn_sprites_mosaic.h"
 #include "bn_bgs_mosaic.h"
-#include "../../include/utils.h"
 
 #include "bn_sprite_items_mannetje.h"
 #include "bn_regular_bg_items_bg.h"
+
+
+#include "../../include/utils.h"
+
+#include "bn_sound_items.h"
+
 
 struct man {
     bn::fixed_point pos= bn::fixed_point(0,0);
     bn::fixed_point vel= bn::fixed_point(0,0);
     bn::fixed spd = 0.5;
-    bn::fixed drg = 0.99;
+    bn::fixed drg = 0.85;
+
+    bn::fixed nrmspd = 1;
+    bn::fixed nrmdrg = 0.85;
+    bn::fixed icyspd = 0.5;
+    bn::fixed icydrg = 0.99;
     bn::fixed jmpspd = -6;
     bn::fixed gravity = 0.25;
     bool flip = false;
@@ -65,9 +75,19 @@ int main()
 
     while(true)
     {
-        bn::sprites_mosaic::set_stretch(bn::min(bn::fixed(1.0), bn::abs(mannetje.vel.x()/40)));
-        pal.set_fade_intensity(bn::min(bn::fixed(1.0), bn::abs(mannetje.vel.x()/40)));
-
+        if (bn::keypad::b_pressed()) {
+            bn::sound_items::ice.play();
+        }
+        
+        if (bn::keypad::b_held()){
+            bn::sprites_mosaic::set_stretch(bn::min(bn::fixed(1.0), bn::abs(mannetje.vel.x()/40)));
+            pal.set_fade_intensity(bn::min(bn::fixed(1.0), bn::abs(mannetje.vel.x()/40)));
+            mannetje.drg=mannetje.icydrg;
+            mannetje.spd=mannetje.icyspd;
+        }else{
+            mannetje.drg=mannetje.nrmdrg;
+            mannetje.spd=mannetje.nrmspd;
+        }
         cam.set_x(lerp(cam.x(), mannetje.pos.x(), .2));
 
         mannetje.spr.set_position(mannetje.pos + bn::fixed_point(0, 20));
@@ -97,7 +117,7 @@ int main()
             mannetje.vel.set_y(0);
             mannetje.jumping = false;
         }
-        if (bn::keypad::a_pressed() || bn::keypad::up_pressed()) 
+        if (bn::keypad::a_pressed()&&!mannetje.jumping || bn::keypad::up_pressed()&&!mannetje.jumping) 
         {
             mannetje.vel.set_y(mannetje.vel.y() = mannetje.jmpspd);
             mannetje.jumping = true;   
