@@ -50,7 +50,7 @@ struct Van
     // fields
     bn::fixed_point position;
     bn::fixed acceleration;
-    bn::fixed max_acceleration = 3;
+    bn::fixed max_acceleration = 6;
     bn::fixed drag = 0.95;
     bn::fixed direction;
 
