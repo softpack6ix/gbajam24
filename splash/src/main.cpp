@@ -11,7 +11,7 @@
 int main()
 {
     bn::core::init();
-    bn::bg_palettes::set_transparent_color(bn::color(31, 0, 31));
+    bn::bg_palettes::set_transparent_color(bn::color(0, 0, 0));
     bn::music_items::splashscreen.play();
 
     splash::setup();
