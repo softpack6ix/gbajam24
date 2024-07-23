@@ -5,6 +5,7 @@
 #include "bn_sprite_animate_actions.h"
 #include "bn_regular_bg_builder.h"
 #include "bn_sprite_text_generator.h"
+#include "bn_sprite_ptr.h"
 #include "bn_regular_bg_animate_actions.h"
 #include "bn_point.h"
 #include "bn_log.h"
@@ -22,23 +23,24 @@
 #include "bn_sprite_items_klok_small.h"
 
 
+using namespace bn;
+
+
 
 int main()
 {
-    bn::core::init();
+    core::init();
 
     int start_x = -32;
     int distance = 48;
 
     
+    sprite_ptr klok = sprite_items::klok.create_sprite(-distance,0);
+    sprite_ptr klok2 = sprite_items::klok.create_sprite(0,0);
+    sprite_ptr klok3 = sprite_items::klok.create_sprite(distance,0);
+    sprite_ptr klok4 = sprite_items::klok.create_sprite(distance * 2,0);
 
-
-    bn::sprite_ptr klok = bn::sprite_items::klok.create_sprite(-distance,0);
-    bn::sprite_ptr klok2 = bn::sprite_items::klok.create_sprite(0,0);
-    bn::sprite_ptr klok3 = bn::sprite_items::klok.create_sprite(distance,0);
-    bn::sprite_ptr klok4 = bn::sprite_items::klok.create_sprite(distance * 2,0);
-
-    bn::sprite_ptr kloks[] = {
+    sprite_ptr kloks[] = {
         klok, klok2, klok3, klok4
     };
 
@@ -49,6 +51,6 @@ int main()
             klok.set_x(klok.x() - 1);
         }
 
-        bn::core::update();
+        core::update();
     }
 }
