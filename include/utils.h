@@ -213,4 +213,10 @@ class info_printer
         info_text_sprites.clear();
         text_generator->generate(0, 65, str, info_text_sprites);
     }
+
+    void print(bn::fixed f)
+    {
+        info_text_sprites.clear();
+        text_generator->generate(0, 65, bn::to_string<20>(f), info_text_sprites);
+    }
 };
