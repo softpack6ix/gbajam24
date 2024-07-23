@@ -54,6 +54,7 @@ int mod(int a, int b)
 }
 
 
+
 bn::fixed distance(bn::fixed_point a, bn::fixed_point b) 
 {
     return abs(a.x() - b.x()) + abs(a.y() - b.y());
