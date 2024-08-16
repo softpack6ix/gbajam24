@@ -1,0 +1,77 @@
+<head></head>
+
+<div class="gba">
+    <canvas></canvas>
+</div>
+
+<div class="loading">loading...</div>
+
+
+<script type="module">
+    import mGBA from './js/mgba.js'
+
+    const $loading = document.querySelector('.loading')
+
+    let loading = ''
+
+    window.MGBA_WASM_URI = './js/mgba.wasm'
+
+    fetch('./gamepack6ix.gba').then((response) => {
+        window.Module = {
+            canvas: document.querySelector('canvas')
+        };
+        
+        let gameblob = response.blob().then((blob) => {
+            $loading.innerHTML = "Loading emulator..";
+            mGBA(window.Module).then(() => {
+                window.Module.FS.mkdir("/hh-gba-data");
+                window.Module.FS.mount(
+                    window.Module.FS.filesystems.IDBFS,
+                    {},
+                    "/hh-gba-data",
+                );
+
+                blob.arrayBuffer().then((data) => {
+                    window.Module.FS.writeFile(
+                        "/hh-gba-data/game.gba",
+                        new Uint8Array(data),
+                    );
+                    window.Module.loadFile("/hh-gba-data/game.gba");
+                    $loading.innerHTML = "";
+                    window.Module._setVolume(0.1);
+                });
+            });
+        });
+    })
+</script>
+
+
+<style>
+    canvas {
+        width: 100%;
+        image-rendering: pixelated;
+    }
+
+    .gba {
+        background-image: url(./gba.png);
+        background-repeat: no-repeat;
+        padding: 50px;
+        background-image: url(gba.png);
+        background-size: cover;
+        width: 620;
+        height: 488px;
+        position: relative;
+        left: 50%;
+        transform: translate(-50%,0%);
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+        text-align: center;
+        margin-top: -16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    body {margin: 0;}
+</style>

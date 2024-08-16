@@ -48,7 +48,6 @@ int main()
     // Main menu
     next_scene next = main_menu::run();
 
-
     while (true)
     {
         if (next == next_scene::casette) 

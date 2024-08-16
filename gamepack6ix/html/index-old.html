@@ -1,0 +1,48 @@
+<head></head>
+
+<div class="gba">
+    <button id="click-to-start">click to start</button>
+</div>
+
+
+
+
+<script>
+    const clickToStart = document.querySelector('#click-to-start')
+
+    clickToStart.onclick = () => {
+        document.querySelector('.gba').innerHTML = `<iframe src="https://rein.computer/gba/html/game.html" width="600" height="400" frameborder="0"></iframe>`
+    }
+
+</script>
+
+<style>
+
+    iframe {
+        background-color: white;
+        border: 0;
+        margin: 34px 3px;
+    }
+
+    .gba {
+        background-image: url(./gba.png);
+        background-repeat: no-repeat;
+        padding: 50px;
+        background-image: url(gba.png);
+        background-size: cover;
+        width: 620;
+        height: 488px;
+        position: relative;
+        left: 50%;
+        transform: translate(-50%,0%);
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+        text-align: center;
+        margin-top: -16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+</style>
