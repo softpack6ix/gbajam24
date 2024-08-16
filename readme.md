@@ -23,7 +23,7 @@ Flashed using BennVenn's Joey Jr. V2++.
 
 
 ## Contributors
-**Coding**: [@goudreinette](https://github.com/goudreinette), [@pierwoudstra](https://github.com/pierwoudstra)
+**Coding**: [@goudreinette](https://github.com/goudreinette), [@pierwoudstra](https://github.com/pierwoudstra), [@w-martens](https://github.com/w-martens)
 
 **Music**: [y4k4r1](https://soundcloud.com/y4k4r1)
 
