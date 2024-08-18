@@ -43,11 +43,14 @@ namespace splash
         bn::point(-64, 64), bn::point(64, 64),
     };
     
-    bn::vector<bn::sprite_ptr, 8> splash_sprite_ptrs;
-    bn::vector<bn::sprite_animate_action<82>, 8> splash_anim_actions;
+   
 
 
     // lipje
+    const int splash_spr_count = 6;
+    bn::optional<bn::sprite_ptr> splash_sprite_ptrs[6];
+    bn::optional<bn::sprite_animate_action<82>> splash_anim_actions[6];
+
     bn::optional<bn::sprite_ptr> lipje;
     bn::optional<bn::sprite_animate_action<120>> lipje_anim;
 
@@ -59,9 +62,11 @@ namespace splash
 
     next_scene run() 
     {
-        for (size_t i = 0; i < 6; i++) {
-            bn::sprite_ptr spr = sprite_items[i].create_sprite(sprite_positions[i] + balloons_offset);
-            bn::sprite_animate_action<82> splash_action = bn::create_sprite_animate_action_once(spr, 1, sprite_items[i].tiles_item(), 
+        
+
+        for (size_t i = 0; i < splash_spr_count; i++) {
+            splash_sprite_ptrs[i] = sprite_items[i].create_sprite(sprite_positions[i] + balloons_offset);
+            splash_anim_actions[i] = bn::create_sprite_animate_action_once(*splash_sprite_ptrs[i], 1, sprite_items[i].tiles_item(), 
                 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
                 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 
                 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
@@ -70,9 +75,7 @@ namespace splash
                 80, 81
             );
 
-            spr.set_scale(2);
-            splash_sprite_ptrs.push_back(spr);
-            splash_anim_actions.push_back(splash_action);
+            splash_sprite_ptrs[i]->set_scale(2);
         }
 
         lipje = bn::sprite_items::lipje.create_sprite(0, 0);
@@ -95,23 +98,19 @@ namespace splash
         {
             // Update balloons
             for (auto &anim : splash_anim_actions) {
-                if (anim.done()) {
+                if (anim->done()) {
                     if (!generated) {
                         generated = true;
                         printer->print("a softpacksix production");
                         text_y = 80.0;
                     }
                 } else {
-                    anim.update();
+                    anim->update();
                 }
             }
 
             // 'KP6' balloons are done, update text and lipje
-            if (splash_anim_actions[0].done() && !lipje_anim->done()) {
-                if (!splash_sprite_prs_removed) {
-                    splash_sprite_ptrs.clear();
-                }
-
+            if (splash_anim_actions[0]->done() && !lipje_anim->done()) {
                 lipje_anim->update();
 
                 if (lipje_anim->current_index() < 20) {
@@ -127,11 +126,14 @@ namespace splash
 
             // Everything is done
             if (lipje_anim->done()) {
-                // Unload everything
-                splash_sprite_ptrs.clear();
-                splash_anim_actions.clear();
+                // Unload everything, animations before ...!
                 lipje.reset();
                 lipje_anim.reset();
+                
+                for (size_t i = 0; i < splash_spr_count; i++) {
+                    splash_sprite_ptrs[i]->~sprite_ptr();
+                    splash_sprite_ptrs[i].reset();
+                }
 
                 bn::music::stop();
                 return next_scene::main_menu;

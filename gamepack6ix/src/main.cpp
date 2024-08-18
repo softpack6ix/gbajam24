@@ -32,7 +32,7 @@
 #include "casette_player.h"
 #include "thuisbezorgd.h"
 #include "steef.h"
-
+#include "ollie.h"
 
 
 int main()
@@ -44,7 +44,7 @@ int main()
     printer = info_printer();
 
     // Splash
-    // splash::run();
+    splash::run();
 
     // Main menu
     next_scene next = main_menu::run();
@@ -61,5 +61,7 @@ int main()
             next = thuisbezorgd::run();
         else if (next == next_scene::steef)
             next = steef::run();
+        else if (next == next_scene::ollie)
+            next = ollie::run();
     }
 }

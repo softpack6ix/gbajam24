@@ -31,31 +31,29 @@
 namespace steef 
 {
 
-    struct man {
-        bn::fixed_point pos= bn::fixed_point(0,0);
-        bn::fixed_point vel= bn::fixed_point(0,0);
-        bn::fixed spd = 0.5;
-        bn::fixed drg = 0.85;
-
-        bn::fixed nrmspd = 1;
-        bn::fixed nrmdrg = 0.85;
-        bn::fixed icyspd = 0.5;
-        bn::fixed icydrg = 0.99;
-        bn::fixed jmpspd = -6;
-        bn::fixed gravity = 0.25;
-        bool flip = false;
-        bool jumping = false;
-        bn::sprite_ptr spr = bn::sprite_items::mannetje.create_sprite(pos);
-        bn::sprite_animate_action<2> idle = bn::create_sprite_animate_action_forever(spr, 15, bn::sprite_items::mannetje.tiles_item(), 3, 4);
-        bn::sprite_animate_action<3> walk = bn::create_sprite_animate_action_forever(spr, 4, bn::sprite_items::mannetje.tiles_item(), 0, 1, 2);
-        bn::sprite_animate_action<2> jump = bn::create_sprite_animate_action_forever(spr, 4, bn::sprite_items::mannetje.tiles_item(), 5, 5);
-    };
-
 
 
     next_scene run()
     {
-        man mannetje;
+        struct man {
+            bn::fixed_point pos= bn::fixed_point(0,0);
+            bn::fixed_point vel= bn::fixed_point(0,0);
+            bn::fixed spd = 0.5;
+            bn::fixed drg = 0.85;
+
+            bn::fixed nrmspd = 1;
+            bn::fixed nrmdrg = 0.85;
+            bn::fixed icyspd = 0.5;
+            bn::fixed icydrg = 0.99;
+            bn::fixed jmpspd = -6;
+            bn::fixed gravity = 0.25;
+            bool flip = false;
+            bool jumping = false;
+            bn::sprite_ptr spr = bn::sprite_items::mannetje.create_sprite(pos);
+            bn::sprite_animate_action<2> idle = bn::create_sprite_animate_action_forever(spr, 15, bn::sprite_items::mannetje.tiles_item(), 3, 4);
+            bn::sprite_animate_action<3> walk = bn::create_sprite_animate_action_forever(spr, 4, bn::sprite_items::mannetje.tiles_item(), 0, 1, 2);
+            bn::sprite_animate_action<2> jump = bn::create_sprite_animate_action_forever(spr, 4, bn::sprite_items::mannetje.tiles_item(), 5, 5);
+        } mannetje;
 
         auto bg = bn::regular_bg_items::bg.create_bg(0,-30);
         bn::camera_ptr cam = bn::camera_ptr::create(mannetje.pos);
@@ -81,6 +79,7 @@ namespace steef
         while(true)
         {
             if (bn::keypad::start_pressed()) {
+
                 return next_scene::main_menu;
             }
 

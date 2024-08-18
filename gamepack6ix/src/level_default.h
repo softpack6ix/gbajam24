@@ -39,20 +39,22 @@ namespace platforming_level
         // pickups
         const bn::fixed x_offset = 120;
         const bn::fixed y_offset = 126;
-        bn::vector<pickups::lipje, 7> pickups;
+
+        pickups::lipje lipjes[7] = 
+        {
+            pickups::lipje(0+x_offset,-y_offset/2),
+            pickups::lipje(32+x_offset,-y_offset/2),
+            pickups::lipje(64+x_offset,-y_offset/2),
+            pickups::lipje(96+x_offset,-y_offset/2),
+            pickups::lipje(32+x_offset,y_offset),
+            pickups::lipje(64+x_offset,y_offset),
+            pickups::lipje(96+x_offset,y_offset)
+        };
+
 
         default_level() 
         {
             // TODO: scan the map for pickups
-            pickups.push_back(pickups::lipje(0+x_offset,-y_offset/2));
-            pickups.push_back(pickups::lipje(32+x_offset,-y_offset/2));
-            pickups.push_back(pickups::lipje(64+x_offset,-y_offset/2));
-            pickups.push_back(pickups::lipje(96+x_offset,-y_offset/2));
-
-            pickups.push_back(pickups::lipje(32+x_offset,y_offset));
-            pickups.push_back(pickups::lipje(64+x_offset,y_offset));
-            pickups.push_back(pickups::lipje(96+x_offset,y_offset));
-
 
             // clouds.set_camera(camera);
         }
@@ -60,9 +62,11 @@ namespace platforming_level
         void update()
         {
             // Lipje pickup items
-            for (pickups::lipje &l : pickups) {
-                l.update();
+            for (size_t i = 0; i < 7; i++)
+            {
+                lipjes[i].update();
             }
+            
 
 
             // Moving clouds

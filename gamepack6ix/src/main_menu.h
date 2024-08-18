@@ -53,7 +53,7 @@ namespace main_menu
             },
             menu_item 
             {
-                next_scene::casette,
+                next_scene::ollie,
                 bn::sprite_items::menu_skater,
                 72,
                 0
@@ -128,14 +128,11 @@ namespace main_menu
             }
         }
 
-
-        printer->print("main menu");
         printer->print("");
-
 
         while (true) 
         {
-            log_memory_usage();
+            // log_memory_usage();
 
             anim.update();
             twinkle_anim.update();
