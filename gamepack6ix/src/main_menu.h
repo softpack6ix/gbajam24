@@ -7,6 +7,8 @@
 #include "scene.h"
 
 #include "bn_sprite_items_menu_casette.h"
+#include "bn_sprite_items_menu_steef.h"
+#include "bn_sprite_items_menu_skater.h"
 #include "bn_sprite_items_menu_thuisbezorgd.h"
 #include "bn_sprite_items_menu_platforming.h"
 #include "bn_sprite_items_menu_selector.h"
@@ -52,7 +54,7 @@ namespace main_menu
             menu_item 
             {
                 next_scene::casette,
-                bn::sprite_items::menu_casette,
+                bn::sprite_items::menu_skater,
                 72,
                 0
             },
@@ -60,8 +62,8 @@ namespace main_menu
         {
             menu_item 
             {
-                next_scene::thuisbezorgd,
-                bn::sprite_items::menu_thuisbezorgd,
+                next_scene::steef,
+                bn::sprite_items::menu_steef,
                 0,
                 72
             },
@@ -81,9 +83,27 @@ namespace main_menu
 
         bn::sound_items::pause.play();
 
-        pickups::lipje pickup = pickups::lipje(-105, -60);
-
+        
+        // BG
         bn::regular_bg_ptr bg = bn::regular_bg_items::menu_bg.create_bg(12,45);
+
+
+        // Pickup
+        bn::sprite_ptr twinkle_spr = bn::sprite_items::twinkle.create_sprite(bn::fixed_point(-105, -60));
+        bn::sprite_animate_action<60> twinkle_anim = bn::create_sprite_animate_action_forever(twinkle_spr, 1, bn::sprite_items::twinkle.tiles_item(), 
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
+            21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
+            41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58
+        );
+
+        bn::sprite_ptr spr = bn::sprite_items::lipje_item.create_sprite(bn::fixed_point(-105, -60));
+        bn::sprite_animate_action<60> anim = bn::create_sprite_animate_action_forever(spr, 1, bn::sprite_items::lipje_item.tiles_item(), 
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
+            21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
+            41, 42, 43, 44, 45, 46, 47, 48, 49, 50
+        );
+        
+
 
 
         // menu selector
@@ -117,7 +137,8 @@ namespace main_menu
         {
             log_memory_usage();
 
-            pickup.update();
+            anim.update();
+            twinkle_anim.update();
 
             if (bn::keypad::up_pressed() || bn::keypad::down_pressed() || bn::keypad::right_pressed() || bn::keypad::left_pressed()) {
                 bn::sound_items::cursor.play();

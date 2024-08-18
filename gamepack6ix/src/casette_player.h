@@ -40,16 +40,16 @@ namespace casette_player
             "breakagez",
             bn::music_items::breakagez
         },
-        song 
-        {
-            "space debris",
-            bn::music_items::space_debris
-        },
-        song 
-        {
-            "hymn_to_aurora",
-            bn::music_items::hymn_to_aurora
-        },
+        // song 
+        // {
+        //     "space debris",
+        //     bn::music_items::space_debris
+        // },
+        // song 
+        // {
+        //     "hymn_to_aurora",
+        //     bn::music_items::hymn_to_aurora
+        // },
     };
 
 
@@ -73,7 +73,7 @@ namespace casette_player
                     current_song++;
                 }
 
-                current_song = mod(current_song, 3);
+                current_song = mod(current_song, 2);
                 songs[current_song].music_item.play();
             }
 

@@ -131,7 +131,7 @@ int main()
        
         mannetje.spr.set_horizontal_flip(mannetje.flip);
 
-        pr.print(bn::format<40>("vel: {}, {}", mannetje.vel.x(), mannetje.vel.y()));
+        // pr.print(bn::format<40>("vel: {}, {}", mannetje.vel.x(), mannetje.vel.y()));
 
         bn::core::update();
     }

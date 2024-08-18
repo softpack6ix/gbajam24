@@ -18,6 +18,8 @@ enum class next_scene
     main_menu,
     casette,
     platforming,
-    thuisbezorgd
+    thuisbezorgd,
+    ollie, 
+    steef
 };
 

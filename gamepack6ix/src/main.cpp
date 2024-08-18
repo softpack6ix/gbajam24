@@ -31,6 +31,7 @@
 #include "main_menu.h"
 #include "casette_player.h"
 #include "thuisbezorgd.h"
+#include "steef.h"
 
 
 
@@ -58,5 +59,7 @@ int main()
             next = main_menu::run();
         else if (next == next_scene::thuisbezorgd)
             next = thuisbezorgd::run();
+        else if (next == next_scene::steef)
+            next = steef::run();
     }
 }
