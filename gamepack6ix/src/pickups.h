@@ -79,7 +79,8 @@ namespace pickups
             anim.update();
             twinkle_anim.update();
 
-            bn::fixed magnetic_range = 64;
+            // bn::fixed magnetic_range = 64;
+            bn::fixed magnetic_range = 32;
 
             // Respawn logic
             if (is_respawning) {
